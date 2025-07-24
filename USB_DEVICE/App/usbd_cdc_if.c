@@ -179,6 +179,8 @@ static int8_t CDC_DeInit_FS(void)
   */
 static int8_t CDC_Control_FS(uint8_t cmd, uint8_t* pbuf, uint16_t length)
 {
+  UNUSED(pbuf);
+  UNUSED(length);
   /* USER CODE BEGIN 5 */
   switch(cmd)
   {
@@ -266,7 +268,7 @@ static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
   //CDC_Transmit_FS(Buf, Buf);
 
   uint32_t len = *Len;
-  memset (gGlobal_Buffer, '\0', 2048);  // clear the buffer
+  memset (gGlobal_Buffer, '\0', sizeof(gGlobal_Buffer));  // clear the buffer
   memcpy(gGlobal_Buffer, Buf, len);  // copy the data to the buffer
   memset(Buf, '\0', len);   // clear the Buf also
   gGlobal_usbLen = len;
