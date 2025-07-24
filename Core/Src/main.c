@@ -96,12 +96,9 @@ unsigned long lastButtonPress = 0; // 마지막 버튼 누름 시간
 uint8_t MSG[30] = {'\0'};		   // 메시지 버퍼
 
 // 타이머 관련 변수들
-static unsigned short gGlobal_keyTimer = 0;		// 키 입력 타이머
-static unsigned short gGlobal_longKey = 0;		// 긴 키 입력 타이머
+// static unsigned short gGlobal_keyTimer = 0;		// 키 입력 타이머
 static unsigned short gGlobal_jog = 0;			// 조그 타이머
 static unsigned short gGlobal_jogTimer = 0;		// 조그 동작 타이머
-static unsigned short gGlobal_ledTimer = 0;		// LED 제어 타이머
-static unsigned short gGlobal_ledCount = 0;		// LED 깜빡임 카운터
 static unsigned short gGlobal_encoderTimer = 0; // LED 제어 타이머
 static unsigned short gGlobal_encoderCount = 0; // LED 깜빡임 카운터
 static unsigned short Buzzer_timer = 0;			// 부저 타이머
@@ -141,19 +138,23 @@ int main(void)
 	HAL_GPIO_WritePin(Dial_LED_1_GPIO_Port, Dial_LED_1_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(Dial_LED_2_GPIO_Port, Dial_LED_2_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(Dial_LED_3_GPIO_Port, Dial_LED_3_Pin, GPIO_PIN_SET);
-	gGlobal_sendData[0] = 0x02;
-	gGlobal_sendData[1] = 0xA4;
-	gGlobal_sendData[2] = 0x32;
-	gGlobal_sendData[3] = 0x34;
-	gGlobal_sendData[4] = 0x30;	 // key
-	gGlobal_sendData[5] = 0x30;	 // key
-	gGlobal_sendData[6] = 0x30;	 // dial
-	gGlobal_sendData[7] = 0x30;	 // trigger
-	gGlobal_sendData[8] = 0x30;	 // trigger
-	gGlobal_sendData[9] = 0x30;	 // crc
-	gGlobal_sendData[10] = 0x30; // crc
-	gGlobal_sendData[11] = 0x03;
-	lastStateCLK = CLK;
+	
+	// 시스템 상태 초기화
+	InitSystemState();
+	
+	// 통신 데이터 초기화
+	g_systemState.comm.sendData[0] = 0x02;
+	g_systemState.comm.sendData[1] = 0xA4;
+	g_systemState.comm.sendData[2] = 0x32;
+	g_systemState.comm.sendData[3] = 0x34;
+	g_systemState.comm.sendData[4] = 0x30;	 // key
+	g_systemState.comm.sendData[5] = 0x30;	 // key
+	g_systemState.comm.sendData[6] = 0x30;	 // dial
+	g_systemState.comm.sendData[7] = 0x30;	 // trigger
+	g_systemState.comm.sendData[8] = 0x30;	 // trigger
+	g_systemState.comm.sendData[9] = 0x30;	 // crc
+	g_systemState.comm.sendData[10] = 0x30; // crc
+	g_systemState.comm.sendData[11] = 0x03;
 	/* USER CODE END 1 */
 
 	/* MCU Configuration--------------------------------------------------------*/
@@ -190,378 +191,39 @@ int main(void)
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
-		HAL_TIM_Base_Start_IT(&htim1);
-		HAL_UART_Receive_IT(&huart1, (uint8_t *)gGlobal_rxData, 1);
 		USB_minipc();
-		currentStateCLK = CLK;
-		if (currentStateCLK != lastStateCLK) // && currentStateCLK == 1
-		{
-			// printf("currentStateCLK = %d, DT = %d\r\n", currentStateCLK, DT);
-			if (DT != currentStateCLK && currentStateCLK == 1)
-			{
-				HAL_GPIO_WritePin(Dial_LED_2_GPIO_Port, Dial_LED_2_Pin, GPIO_PIN_SET);
-				HAL_GPIO_WritePin(Dial_LED_3_GPIO_Port, Dial_LED_3_Pin, GPIO_PIN_SET);
-				HAL_GPIO_WritePin(Dial_LED_1_GPIO_Port, Dial_LED_1_Pin, GPIO_PIN_RESET);
-				// counter++;
-				gGlobal_sendData[6] = 0x32;
-				Pad_calculate_crc8();
-				gGlobal_sendData[9] = gGlobal_crc1;
-				gGlobal_sendData[10] = gGlobal_crc2;
-				CDC_Transmit_FS((uint8_t *)gGlobal_sendData, sizeof(gGlobal_sendData));
-				gGlobal_sendData[6] = 0x30;
-				gGlobal_ledTimer = 0;
-				gGlobal_ledCount = 0;
-			}
-			if (DT == 0 && currentStateCLK == 0) // else
-			{
-				dtState = 1; // 1
-			}
-			if (dtState == 1 && DT == 1 && currentStateCLK == 1)
-			{
-				HAL_GPIO_WritePin(Dial_LED_1_GPIO_Port, Dial_LED_1_Pin, GPIO_PIN_SET);
-				HAL_GPIO_WritePin(Dial_LED_2_GPIO_Port, Dial_LED_2_Pin, GPIO_PIN_SET);
-				HAL_GPIO_WritePin(Dial_LED_3_GPIO_Port, Dial_LED_3_Pin, GPIO_PIN_RESET);
-				// counter--;
-				gGlobal_sendData[6] = 0x31;
-				Pad_calculate_crc8();
-				gGlobal_sendData[9] = gGlobal_crc1;
-				gGlobal_sendData[10] = gGlobal_crc2;
-				CDC_Transmit_FS((uint8_t *)gGlobal_sendData, sizeof(gGlobal_sendData));
-				gGlobal_sendData[6] = 0x30;
-				gGlobal_ledTimer = 0;
-				gGlobal_ledCount = 0;
-				dtState = 0;
-			}
-		}
-		lastStateCLK = currentStateCLK;
+		
+		// 로터리 인코더 처리
+		ProcessEncoder();
+		
+		// LED 상태 처리
+		ProcessLEDState();
 
-		if (gGlobal_ledCount == 70)
-		{
-			HAL_GPIO_WritePin(Dial_LED_1_GPIO_Port, Dial_LED_1_Pin, GPIO_PIN_SET);
-			HAL_GPIO_WritePin(Dial_LED_2_GPIO_Port, Dial_LED_2_Pin, GPIO_PIN_RESET);
-			HAL_GPIO_WritePin(Dial_LED_3_GPIO_Port, Dial_LED_3_Pin, GPIO_PIN_SET);
-			if (gGlobal_ledCount == 100)
-			{
-				gGlobal_ledCount = 0;
-			}
-		}
-
-		gGlobal_triggIn1 = HAL_GPIO_ReadPin(Trigger_IN_1_GPIO_Port, Trigger_IN_1_Pin);
-		gGlobal_triggIn2 = HAL_GPIO_ReadPin(Trigger_IN_2_GPIO_Port, Trigger_IN_2_Pin);
-		gGlobal_upButton = HAL_GPIO_ReadPin(UP_GPIO_Port, UP_Pin);
-		gGlobal_downButton = HAL_GPIO_ReadPin(DOWN_GPIO_Port, DOWN_Pin);
-		gGlobal_powerButton = HAL_GPIO_ReadPin(POWRAY_ON_GPIO_Port, POWRAY_ON_Pin);
-		gGlobal_boostButton = HAL_GPIO_ReadPin(BOOST_GPIO_Port, BOOST_Pin);
-		gGlobal_pcmodeButton = HAL_GPIO_ReadPin(MODE_GPIO_Port, MODE_Pin);
-		gGlobal_memory1Button = HAL_GPIO_ReadPin(Memory_1_GPIO_Port, Memory_1_Pin);
-		gGlobal_memory2Button = HAL_GPIO_ReadPin(Memory_2_GPIO_Port, Memory_2_Pin);
-		gGlobal_memory3Button = HAL_GPIO_ReadPin(Memory_3_GPIO_Port, Memory_3_Pin);
-		gGlobal_memory4Button = HAL_GPIO_ReadPin(Memory_4_GPIO_Port, Memory_4_Pin);
-		// printf("gGlobal_keyCount = %d, gGlobal_state = %d\r\n", gGlobal_keyCount, gGlobal_state);
-		if (gGlobal_upButton == 0)
-		{
-			if (gGlobal_keyCount > 70 && gGlobal_keyCount < 3000)
-			{
-				gGlobal_state = 1;
-			}
-			HAL_GPIO_WritePin(System_LED_GPIO_Port, System_LED_Pin, GPIO_PIN_RESET);
-			if (gGlobal_longKeycount == 1)
-			{
-				gGlobal_sendData[4] = 0x50;
-				Pad_calculate_crc8();
-				gGlobal_sendData[9] = gGlobal_crc1;
-				gGlobal_sendData[10] = gGlobal_crc2;
-				CDC_Transmit_FS((uint8_t *)gGlobal_sendData, sizeof(gGlobal_sendData));
-				gGlobal_sendData[4] = 0x30;
-				gGlobal_longKey = 0;
-				gGlobal_longKeycount = 0;
-				gGlobal_state = 0;
-				gGlobal_sendData[4] = 0x30;
-			}
-		}
-		if (gGlobal_upButton == 1 && gGlobal_state == 1)
-		{
-			gGlobal_sendData[4] = 0x31;
-			Pad_calculate_crc8();
-			gGlobal_sendData[9] = gGlobal_crc1;
-			gGlobal_sendData[10] = gGlobal_crc2;
-			CDC_Transmit_FS((uint8_t *)gGlobal_sendData, sizeof(gGlobal_sendData));
-			gGlobal_sendData[4] = 0x30;
-			gGlobal_keyCount = 0;
-			gGlobal_keyTimer = 0;
-			gGlobal_state = 0;
-		}
-
-		if (gGlobal_downButton == 0)
-		{
-			if (gGlobal_keyCount > 70 && gGlobal_keyCount < 3000)
-			{
-				gGlobal_state = 2;
-			}
-		}
-		if (gGlobal_downButton == 1 && gGlobal_state == 2)
-		{
-			gGlobal_sendData[4] = 0x32;
-			Pad_calculate_crc8();
-			gGlobal_sendData[9] = gGlobal_crc1;
-			gGlobal_sendData[10] = gGlobal_crc2;
-			CDC_Transmit_FS((uint8_t *)gGlobal_sendData, sizeof(gGlobal_sendData));
-			gGlobal_sendData[4] = 0x30;
-			gGlobal_keyCount = 0;
-			gGlobal_keyTimer = 0;
-			gGlobal_state = 0;
-		}
-		if (gGlobal_powerButton == 0)
-		{
-			if (gGlobal_keyCount > 70 && gGlobal_keyCount < 3000)
-			{
-				gGlobal_state = 3;
-			}
-		}
-		if (gGlobal_powerButton == 1 && gGlobal_state == 3)
-		{
-			gGlobal_sendData[4] = 0x34;
-			Pad_calculate_crc8();
-			gGlobal_sendData[9] = gGlobal_crc1;
-			gGlobal_sendData[10] = gGlobal_crc2;
-			CDC_Transmit_FS((uint8_t *)gGlobal_sendData, sizeof(gGlobal_sendData));
-			gGlobal_sendData[4] = 0x30;
-			gGlobal_keyCount = 0;
-			gGlobal_keyTimer = 0;
-			gGlobal_state = 0;
-		}
-		if (gGlobal_boostButton == 0)
-		{
-			if (gGlobal_keyCount > 70 && gGlobal_keyCount < 3000)
-			{
-				gGlobal_state = 4;
-			}
-		}
-		if (gGlobal_boostButton == 1 && gGlobal_state == 4)
-		{
-			gGlobal_sendData[4] = 0x35;
-			Pad_calculate_crc8();
-			gGlobal_sendData[9] = gGlobal_crc1;
-			gGlobal_sendData[10] = gGlobal_crc2;
-			CDC_Transmit_FS((uint8_t *)gGlobal_sendData, sizeof(gGlobal_sendData));
-			gGlobal_sendData[4] = 0x30;
-			gGlobal_keyCount = 0;
-			gGlobal_keyTimer = 0;
-			gGlobal_state = 0;
-		}
-		if (gGlobal_pcmodeButton == 0)
-		{
-			if (gGlobal_keyCount > 70 && gGlobal_keyCount < 3000)
-			{
-				gGlobal_state = 5;
-			}
-		}
-		if (gGlobal_pcmodeButton == 1 && gGlobal_state == 5)
-		{
-			gGlobal_sendData[4] = 0x33;
-			Pad_calculate_crc8();
-			gGlobal_sendData[9] = gGlobal_crc1;
-			gGlobal_sendData[10] = gGlobal_crc2;
-			CDC_Transmit_FS((uint8_t *)gGlobal_sendData, sizeof(gGlobal_sendData));
-			gGlobal_sendData[4] = 0x30;
-			gGlobal_keyCount = 0;
-			gGlobal_keyTimer = 0;
-			gGlobal_state = 0;
-		}
-		if (gGlobal_memory1Button == 0)
-		{
-			if (gGlobal_keyCount > 70 && gGlobal_keyCount < 3000)
-			{
-				gGlobal_state = 6;
-			}
-			if (gGlobal_longKeycount == 1)
-			{
-				gGlobal_sendData[5] = 0x32;
-				Pad_calculate_crc8();
-				gGlobal_sendData[9] = gGlobal_crc1;
-				gGlobal_sendData[10] = gGlobal_crc2;
-				CDC_Transmit_FS((uint8_t *)gGlobal_sendData, sizeof(gGlobal_sendData));
-				gGlobal_sendData[5] = 0x30;
-				gGlobal_longKey = 0;
-				gGlobal_longKeycount = 0;
-				gGlobal_state = 0;
-			}
-		}
-		if (gGlobal_memory1Button == 1 && gGlobal_state == 6)
-		{
-			gGlobal_sendData[5] = 0x31;
-			Pad_calculate_crc8();
-			gGlobal_sendData[9] = gGlobal_crc1;
-			gGlobal_sendData[10] = gGlobal_crc2;
-			CDC_Transmit_FS((uint8_t *)gGlobal_sendData, sizeof(gGlobal_sendData));
-			gGlobal_sendData[5] = 0x30;
-			gGlobal_keyCount = 0;
-			gGlobal_keyTimer = 0;
-			gGlobal_state = 0;
-		}
-		if (gGlobal_memory2Button == 0)
-		{
-			if (gGlobal_keyCount > 70 && gGlobal_keyCount < 3000)
-			{
-				gGlobal_state = 7;
-			}
-			if (gGlobal_longKeycount == 1)
-			{
-				gGlobal_sendData[5] = 0x34;
-				Pad_calculate_crc8();
-				gGlobal_sendData[9] = gGlobal_crc1;
-				gGlobal_sendData[10] = gGlobal_crc2;
-				CDC_Transmit_FS((uint8_t *)gGlobal_sendData, sizeof(gGlobal_sendData));
-				gGlobal_sendData[5] = 0x30;
-				gGlobal_longKey = 0;
-				gGlobal_longKeycount = 0;
-				gGlobal_state = 0;
-			}
-		}
-		if (gGlobal_memory2Button == 1 && gGlobal_state == 7)
-		{
-			gGlobal_sendData[5] = 0x33;
-			Pad_calculate_crc8();
-			gGlobal_sendData[9] = gGlobal_crc1;
-			gGlobal_sendData[10] = gGlobal_crc2;
-			CDC_Transmit_FS((uint8_t *)gGlobal_sendData, sizeof(gGlobal_sendData));
-			gGlobal_sendData[5] = 0x30;
-			gGlobal_keyCount = 0;
-			gGlobal_keyTimer = 0;
-			gGlobal_state = 0;
-		}
-		if (gGlobal_memory3Button == 0)
-		{
-			if (gGlobal_keyCount > 70 && gGlobal_keyCount < 3000)
-			{
-				gGlobal_state = 8;
-			}
-			if (gGlobal_longKeycount == 1)
-			{
-				gGlobal_sendData[5] = 0x36;
-				Pad_calculate_crc8();
-				gGlobal_sendData[9] = gGlobal_crc1;
-				gGlobal_sendData[10] = gGlobal_crc2;
-				CDC_Transmit_FS((uint8_t *)gGlobal_sendData, sizeof(gGlobal_sendData));
-				gGlobal_sendData[5] = 0x30;
-				gGlobal_longKey = 0;
-				gGlobal_longKeycount = 0;
-				gGlobal_state = 0;
-			}
-		}
-		if (gGlobal_memory3Button == 1 && gGlobal_state == 8)
-		{
-			gGlobal_sendData[5] = 0x35;
-			Pad_calculate_crc8();
-			gGlobal_sendData[9] = gGlobal_crc1;
-			gGlobal_sendData[10] = gGlobal_crc2;
-			CDC_Transmit_FS((uint8_t *)gGlobal_sendData, sizeof(gGlobal_sendData));
-			gGlobal_sendData[5] = 0x30;
-			gGlobal_keyCount = 0;
-			gGlobal_keyTimer = 0;
-			gGlobal_state = 0;
-		}
-		if (gGlobal_memory4Button == 0)
-		{
-			if (gGlobal_keyCount > 70 && gGlobal_keyCount < 3000)
-			{
-				gGlobal_state = 9;
-			}
-			if (gGlobal_longKeycount == 1)
-			{
-				gGlobal_sendData[5] = 0x38;
-				Pad_calculate_crc8();
-				gGlobal_sendData[9] = gGlobal_crc1;
-				gGlobal_sendData[10] = gGlobal_crc2;
-				CDC_Transmit_FS((uint8_t *)gGlobal_sendData, sizeof(gGlobal_sendData));
-				gGlobal_sendData[5] = 0x30;
-				gGlobal_longKey = 0;
-				gGlobal_longKeycount = 0;
-				gGlobal_state = 0;
-			}
-		}
-		if (gGlobal_memory4Button == 1 && gGlobal_state == 9)
-		{
-			gGlobal_sendData[5] = 0x37;
-			Pad_calculate_crc8();
-			gGlobal_sendData[9] = gGlobal_crc1;
-			gGlobal_sendData[10] = gGlobal_crc2;
-			CDC_Transmit_FS((uint8_t *)gGlobal_sendData, sizeof(gGlobal_sendData));
-			gGlobal_sendData[5] = 0x30;
-			gGlobal_keyCount = 0;
-			gGlobal_keyTimer = 0;
-			gGlobal_state = 0;
-		}
-		if (gGlobal_upButton == 1 && gGlobal_downButton == 1 && gGlobal_powerButton == 1 && gGlobal_boostButton == 1 && gGlobal_pcmodeButton && gGlobal_memory1Button && gGlobal_memory2Button && gGlobal_memory3Button && gGlobal_memory4Button)
-		{
-			gGlobal_keyCount = 0;
-			gGlobal_keyTimer = 0;
-			gGlobal_state = 0;
-			gGlobal_longKey = 0;
-			gGlobal_longKeycount = 0;
-		}
-		if (gGlobal_keyCount == 50)
+		// GPIO 입력 상태 업데이트
+		g_systemState.triggers.triggIn1 = HAL_GPIO_ReadPin(Trigger_IN_1_GPIO_Port, Trigger_IN_1_Pin);
+		g_systemState.triggers.triggIn2 = HAL_GPIO_ReadPin(Trigger_IN_2_GPIO_Port, Trigger_IN_2_Pin);
+		g_systemState.buttons.upButton = HAL_GPIO_ReadPin(UP_GPIO_Port, UP_Pin);
+		g_systemState.buttons.downButton = HAL_GPIO_ReadPin(DOWN_GPIO_Port, DOWN_Pin);
+		g_systemState.buttons.powerButton = HAL_GPIO_ReadPin(POWRAY_ON_GPIO_Port, POWRAY_ON_Pin);
+		g_systemState.buttons.boostButton = HAL_GPIO_ReadPin(BOOST_GPIO_Port, BOOST_Pin);
+		g_systemState.buttons.pcmodeButton = HAL_GPIO_ReadPin(MODE_GPIO_Port, MODE_Pin);
+		g_systemState.buttons.memory1Button = HAL_GPIO_ReadPin(Memory_1_GPIO_Port, Memory_1_Pin);
+		g_systemState.buttons.memory2Button = HAL_GPIO_ReadPin(Memory_2_GPIO_Port, Memory_2_Pin);
+		g_systemState.buttons.memory3Button = HAL_GPIO_ReadPin(Memory_3_GPIO_Port, Memory_3_Pin);
+		g_systemState.buttons.memory4Button = HAL_GPIO_ReadPin(Memory_4_GPIO_Port, Memory_4_Pin);
+		
+		// 버튼 처리
+		ProcessAllButtons();
+		
+		// 부저 처리
+		if (g_systemState.timers.keyCount == 50)
 		{
 			Buzzer_timer = 0;
 			HAL_GPIO_WritePin(BUZZER_GPIO_Port, BUZZER_Pin, GPIO_PIN_SET);
 		}
-		if (gGlobal_triggIn1 == 0 && gGlobal_trigginState1 == 1 && gGlobal_triggerState == 0) // 트리거 1 하강엣지 검출
-		{
-			gGlobal_sendData[7] = 0x31;
-			Pad_calculate_crc8();
-			gGlobal_sendData[9] = gGlobal_crc1;
-			gGlobal_sendData[10] = gGlobal_crc2;
-			CDC_Transmit_FS((uint8_t *)gGlobal_sendData, sizeof(gGlobal_sendData));
-			gGlobal_sendData[7] = 0x30;
-			gGlobal_triggerState = 1;
-		}
-		if (gGlobal_triggIn1 == 1 && gGlobal_trigginState1 == 2 && gGlobal_triggerState == 5) // 트리거 1 상승엣지 검출
-		{
-			gGlobal_sendData[7] = 0x31;
-			Pad_calculate_crc8();
-			gGlobal_sendData[9] = gGlobal_crc1;
-			gGlobal_sendData[10] = gGlobal_crc2;
-			CDC_Transmit_FS((uint8_t *)gGlobal_sendData, sizeof(gGlobal_sendData));
-			gGlobal_sendData[7] = 0x30;
-			gGlobal_triggerState = 1;
-		}
-		if (gGlobal_triggIn2 == 0 && gGlobal_trigginState2 == 1 && gGlobal_triggerState2 == 10)
-		{
-			gGlobal_sendData[8] = 0x32;
-			Pad_calculate_crc8();
-			gGlobal_sendData[9] = gGlobal_crc1;
-			gGlobal_sendData[10] = gGlobal_crc2;
-			CDC_Transmit_FS((uint8_t *)gGlobal_sendData, sizeof(gGlobal_sendData));
-			gGlobal_sendData[8] = 0x30;
-			gGlobal_triggerState2 = 1;
-		}
-		if (gGlobal_triggIn2 == 1 && gGlobal_trigginState2 == 2 && gGlobal_triggerState2 == 15)
-		{
-			gGlobal_sendData[8] = 0x32;
-			Pad_calculate_crc8();
-			gGlobal_sendData[9] = gGlobal_crc1;
-			gGlobal_sendData[10] = gGlobal_crc2;
-			CDC_Transmit_FS((uint8_t *)gGlobal_sendData, sizeof(gGlobal_sendData));
-			gGlobal_sendData[8] = 0x30;
-			gGlobal_triggerState2 = 1;
-		}
-		if (gGlobal_triggIn1 == 1 && gGlobal_trigginState1 == 1) // 트리거 1 하강엣지 대기 상태로 복귀
-		{
-			gGlobal_triggerState = 0;
-		}
-		if (gGlobal_triggIn1 == 0 && gGlobal_trigginState1 == 2) // 트리거 1 상승엣지 대기 상태로 설정
-		{
-			gGlobal_triggerState = 5;
-		}
-		if (gGlobal_triggIn2 == 1 && gGlobal_trigginState2 == 1) // 트리거 2 하강엣지 대기 상태로 복귀
-		{
-			gGlobal_triggerState2 = 10;
-		}
-		if (gGlobal_triggIn2 == 0 && gGlobal_trigginState2 == 2) // 트리거 2 상승엣지 대기 상태로 설정
-		{
-			gGlobal_triggerState2 = 15;
-		}
-		// printf("gGlobal_triggIn1 = %d, gGlobal_trigginState1 = %d\r\n", gGlobal_triggIn1, gGlobal_trigginState1);
+		
+		//트리거 처리
+		ProcessTriggers();
 	}
 	/* USER CODE END 3 */
 }
@@ -767,6 +429,7 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 
+// UART 수신 완료 콜백 함수
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 	if (huart->Instance == USART1)
@@ -776,15 +439,16 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 	}
 }
 
+// 타이머 콜백 함수
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
 	UNUSED(htim);
 
 	// ms 단위
-	gGlobal_keyTimer += 1;
-	gGlobal_longKey += 1;
+	g_systemState.timers.keyTimer += 1;
+	g_systemState.timers.longKey += 1;
 	gGlobal_jog += 1;
-	gGlobal_ledTimer += 1;
+	g_systemState.timers.ledTimer += 1;
 	Buzzer_timer += 1;
 	gGlobal_encoderTimer += 1;
 
@@ -793,20 +457,24 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		gGlobal_jog = 0;
 		gGlobal_jogTimer++;
 	}
-	if (gGlobal_keyTimer >= 1)
+	if (g_systemState.timers.keyTimer >= 1)
 	{
-		gGlobal_keyTimer = 0;
-		gGlobal_keyCount++;
+		g_systemState.timers.keyTimer = 0;
+		g_systemState.timers.keyCount++;
 	}
-	if (gGlobal_longKey >= 3000)
+	if (g_systemState.timers.longKey >= 3000)
 	{
-		gGlobal_keyTimer = 0;
-		gGlobal_longKeycount++;
+		g_systemState.timers.longKey = 0;
+		g_systemState.timers.longKeycount++;
 	}
-	if (gGlobal_ledTimer >= 10)
+	if (g_systemState.timers.ledTimer >= 10)
 	{
-		gGlobal_ledTimer = 0;
-		gGlobal_ledCount++;
+		g_systemState.timers.ledTimer = 0;
+		g_systemState.timers.ledCount++;
+		if (g_systemState.timers.ledCount >= 100){
+			HAL_GPIO_TogglePin(System_LED_GPIO_Port, System_LED_Pin);
+			g_systemState.timers.ledCount = 0;
+		}
 	}
 	if (gGlobal_encoderTimer >= 1)
 	{

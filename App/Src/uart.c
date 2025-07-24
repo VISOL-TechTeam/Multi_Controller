@@ -67,39 +67,39 @@ int USB_minipc(void)
                     // 트리거 설정 명령 수신
                     if (collectBuffer[4] == 0x31)
                     {
-                        gGlobal_trigginState1 = 1; // 하강엣지 트리거
+                        g_systemState.triggers.trigginState1 = 1; // 하강엣지 트리거
                     }
                     if (collectBuffer[4] == 0x32)
                     {
-                        gGlobal_trigginState1 = 2; // 상승엣지 트리거
+                        g_systemState.triggers.trigginState1 = 2; // 상승엣지 트리거
                     }
                     if (collectBuffer[5] == 0x31)
                     {
-                        gGlobal_trigginState2 = 1; // 하강엣지 트리거
+                        g_systemState.triggers.trigginState2 = 1; // 하강엣지 트리거
                     }
                     if (collectBuffer[5] == 0x32)
                     {
-                        gGlobal_trigginState2 = 2; // 상승엣지 트리거
+                        g_systemState.triggers.trigginState2 = 2; // 상승엣지 트리거
                     }
                     if (collectBuffer[6] == 0x31)
                     {
                         HAL_GPIO_WritePin(Trigger_OUT_1_GPIO_Port, Trigger_OUT_1_Pin, GPIO_PIN_SET);
-                        gGlobal_triggoutState1 = 1; // HIGH 출력
+                        g_systemState.triggoutState1 = 1; // HIGH 출력
                     }
                     if (collectBuffer[6] == 0x32)
                     {
                         HAL_GPIO_WritePin(Trigger_OUT_1_GPIO_Port, Trigger_OUT_1_Pin, GPIO_PIN_RESET);
-                        gGlobal_triggoutState1 = 2; // LOW 출력
+                        g_systemState.triggoutState1 = 2; // LOW 출력
                     }
                     if (collectBuffer[7] == 0x31)
                     {
                         HAL_GPIO_WritePin(Trigger_OUT_2_GPIO_Port, Trigger_OUT_2_Pin, GPIO_PIN_SET);
-                        gGlobal_triggoutState2 = 1; // HIGH 출력
+                        g_systemState.triggoutState2 = 1; // HIGH 출력
                     }
                     if (collectBuffer[7] == 0x32)
                     {
                         HAL_GPIO_WritePin(Trigger_OUT_2_GPIO_Port, Trigger_OUT_2_Pin, GPIO_PIN_RESET);
-                        gGlobal_triggoutState2 = 2; // LOW 출력
+                        g_systemState.triggoutState2 = 2; // LOW 출력
                     }
                     // TriggerPin_1();
                     memcpy(testbuf, collectBuffer, collectIndex); // 설정 확인을 위한 응답 전송

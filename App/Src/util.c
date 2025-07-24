@@ -1,5 +1,6 @@
 #include "util.h"
 #include "main.h"
+#include "gpio.h"
 
 char hextoascii(char local_toconv) // toconv
 {
@@ -12,8 +13,8 @@ char hextoascii(char local_toconv) // toconv
 
 void hex2ascii(void)
 {
-	gGlobal_crc1 = hextoascii(gGlobal_sum1);
-	gGlobal_crc2 = hextoascii(gGlobal_sum2);
+	g_systemState.comm.crc1 = hextoascii(gGlobal_sum1);
+	g_systemState.comm.crc2 = hextoascii(gGlobal_sum2);
 	gGlobal_sum = 0;
 }
 
@@ -32,9 +33,10 @@ uint8_t calculate_crc8(void)
 
 uint8_t Pad_calculate_crc8(void)
 {
+	gGlobal_sum = 0; // 초기화 추가
 	for (int i = 1; i < 9; i++)
 	{
-		gGlobal_sum += gGlobal_sendData[i];
+		gGlobal_sum += g_systemState.comm.sendData[i];
 	}
 	gGlobal_sum1 = gGlobal_sum >> 4;
 	gGlobal_sum2 = gGlobal_sum << 4;
