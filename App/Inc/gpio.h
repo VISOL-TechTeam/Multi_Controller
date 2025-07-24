@@ -56,6 +56,8 @@ typedef struct {
     int currentStateCLK;
     int lastStateCLK;
     uint8_t dtState;
+    uint8_t last_valid_direction;
+    uint32_t last_action_time;
 } EncoderStates_t;
 
 // 통신 데이터 구조체

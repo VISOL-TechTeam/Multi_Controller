@@ -220,26 +220,43 @@ void ProcessEncoder(void)
             g_systemState.comm.sendData[6] = 0x30;
             g_systemState.timers.ledTimer = 0;
             g_systemState.timers.ledCount = 0;
+            g_systemState.encoder.last_valid_direction = 1;
+            g_systemState.encoder.last_action_time = HAL_GetTick();
         }
         else if (dtValue == 0 && g_systemState.encoder.currentStateCLK == 0)
         {
             g_systemState.encoder.dtState = 1;
         }
-        else if (g_systemState.encoder.dtState == 1 && dtValue == 1 && g_systemState.encoder.currentStateCLK == 1)
+        else if (g_systemState.encoder.dtState == 1 && dtValue == 1 && g_systemState.encoder.currentStateCLK == 1 && HAL_GetTick() - g_systemState.encoder.last_action_time < 150)
         {
-            // 반시계방향 회전
-            HAL_GPIO_WritePin(Dial_LED_1_GPIO_Port, Dial_LED_1_Pin, GPIO_PIN_SET);
-            HAL_GPIO_WritePin(Dial_LED_2_GPIO_Port, Dial_LED_2_Pin, GPIO_PIN_SET);
-            HAL_GPIO_WritePin(Dial_LED_3_GPIO_Port, Dial_LED_3_Pin, GPIO_PIN_RESET);
-            g_systemState.comm.sendData[6] = 0x31;
-            Pad_calculate_crc8();
-            g_systemState.comm.sendData[9] = g_systemState.comm.crc1;
-            g_systemState.comm.sendData[10] = g_systemState.comm.crc2;
-            CDC_Transmit_FS((uint8_t *)g_systemState.comm.sendData, sizeof(g_systemState.comm.sendData));
-            g_systemState.comm.sendData[6] = 0x30;
-            g_systemState.timers.ledTimer = 0;
-            g_systemState.timers.ledCount = 0;
-            g_systemState.encoder.dtState = 0;
+
+            if (g_systemState.encoder.last_valid_direction != 1 || (HAL_GetTick() - g_systemState.encoder.last_action_time) > 250)
+            {
+                // 반시계방향 회전
+                HAL_GPIO_WritePin(Dial_LED_1_GPIO_Port, Dial_LED_1_Pin, GPIO_PIN_SET);
+                HAL_GPIO_WritePin(Dial_LED_2_GPIO_Port, Dial_LED_2_Pin, GPIO_PIN_SET);
+                HAL_GPIO_WritePin(Dial_LED_3_GPIO_Port, Dial_LED_3_Pin, GPIO_PIN_RESET);
+                g_systemState.comm.sendData[6] = 0x31;
+                Pad_calculate_crc8();
+                g_systemState.comm.sendData[9] = g_systemState.comm.crc1;
+                g_systemState.comm.sendData[10] = g_systemState.comm.crc2;
+                CDC_Transmit_FS((uint8_t *)g_systemState.comm.sendData, sizeof(g_systemState.comm.sendData));
+                g_systemState.comm.sendData[6] = 0x30;
+                g_systemState.timers.ledTimer = 0;
+                g_systemState.timers.ledCount = 0;
+                g_systemState.encoder.dtState = 0;
+                g_systemState.encoder.last_valid_direction = 2;
+                g_systemState.encoder.last_action_time = HAL_GetTick();
+            }
+            else
+            {
+            }
+        }
+
+        if (HAL_GetTick() - g_systemState.encoder.last_action_time > 250)
+        {
+            g_systemState.encoder.last_valid_direction = 0;
+            g_systemState.encoder.last_action_time = HAL_GetTick();
         }
     }
     g_systemState.encoder.lastStateCLK = g_systemState.encoder.currentStateCLK;
