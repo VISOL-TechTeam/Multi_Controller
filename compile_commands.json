@@ -1,0 +1,194 @@
+[
+{
+  "directory": "C:/HW/FW/Multi_Controller",
+  "command": "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\arm-none-eabi-gcc.exe -DDEBUG -DSTM32F103xB -DUSE_HAL_DRIVER -IC:/HW/FW/Multi_Controller/USB_DEVICE/App -IC:/HW/FW/Multi_Controller/USB_DEVICE/Target -IC:/HW/FW/Multi_Controller/Core/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Core/Inc -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Device/ST/STM32F1xx/Include -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Include  -mcpu=cortex-m3  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -std=gnu11 -o CMakeFiles\\Multi_Controller.dir\\USB_DEVICE\\Target\\usbd_conf.c.obj -c C:\\HW\\FW\\Multi_Controller\\USB_DEVICE\\Target\\usbd_conf.c",
+  "file": "C:\\HW\\FW\\Multi_Controller\\USB_DEVICE\\Target\\usbd_conf.c",
+  "output": "CMakeFiles\\Multi_Controller.dir\\USB_DEVICE\\Target\\usbd_conf.c.obj"
+},
+{
+  "directory": "C:/HW/FW/Multi_Controller",
+  "command": "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\arm-none-eabi-gcc.exe -DDEBUG -DSTM32F103xB -DUSE_HAL_DRIVER -IC:/HW/FW/Multi_Controller/USB_DEVICE/App -IC:/HW/FW/Multi_Controller/USB_DEVICE/Target -IC:/HW/FW/Multi_Controller/Core/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Core/Inc -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Device/ST/STM32F1xx/Include -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Include  -mcpu=cortex-m3  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -std=gnu11 -o CMakeFiles\\Multi_Controller.dir\\USB_DEVICE\\App\\usb_device.c.obj -c C:\\HW\\FW\\Multi_Controller\\USB_DEVICE\\App\\usb_device.c",
+  "file": "C:\\HW\\FW\\Multi_Controller\\USB_DEVICE\\App\\usb_device.c",
+  "output": "CMakeFiles\\Multi_Controller.dir\\USB_DEVICE\\App\\usb_device.c.obj"
+},
+{
+  "directory": "C:/HW/FW/Multi_Controller",
+  "command": "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\arm-none-eabi-gcc.exe -DDEBUG -DSTM32F103xB -DUSE_HAL_DRIVER -IC:/HW/FW/Multi_Controller/USB_DEVICE/App -IC:/HW/FW/Multi_Controller/USB_DEVICE/Target -IC:/HW/FW/Multi_Controller/Core/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Core/Inc -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Device/ST/STM32F1xx/Include -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Include  -mcpu=cortex-m3  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -std=gnu11 -o CMakeFiles\\Multi_Controller.dir\\USB_DEVICE\\App\\usbd_desc.c.obj -c C:\\HW\\FW\\Multi_Controller\\USB_DEVICE\\App\\usbd_desc.c",
+  "file": "C:\\HW\\FW\\Multi_Controller\\USB_DEVICE\\App\\usbd_desc.c",
+  "output": "CMakeFiles\\Multi_Controller.dir\\USB_DEVICE\\App\\usbd_desc.c.obj"
+},
+{
+  "directory": "C:/HW/FW/Multi_Controller",
+  "command": "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\arm-none-eabi-gcc.exe -DDEBUG -DSTM32F103xB -DUSE_HAL_DRIVER -IC:/HW/FW/Multi_Controller/USB_DEVICE/App -IC:/HW/FW/Multi_Controller/USB_DEVICE/Target -IC:/HW/FW/Multi_Controller/Core/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Core/Inc -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Device/ST/STM32F1xx/Include -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Include  -mcpu=cortex-m3  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -std=gnu11 -o CMakeFiles\\Multi_Controller.dir\\USB_DEVICE\\App\\usbd_cdc_if.c.obj -c C:\\HW\\FW\\Multi_Controller\\USB_DEVICE\\App\\usbd_cdc_if.c",
+  "file": "C:\\HW\\FW\\Multi_Controller\\USB_DEVICE\\App\\usbd_cdc_if.c",
+  "output": "CMakeFiles\\Multi_Controller.dir\\USB_DEVICE\\App\\usbd_cdc_if.c.obj"
+},
+{
+  "directory": "C:/HW/FW/Multi_Controller",
+  "command": "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\arm-none-eabi-gcc.exe -DDEBUG -DSTM32F103xB -DUSE_HAL_DRIVER -IC:/HW/FW/Multi_Controller/USB_DEVICE/App -IC:/HW/FW/Multi_Controller/USB_DEVICE/Target -IC:/HW/FW/Multi_Controller/Core/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Core/Inc -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Device/ST/STM32F1xx/Include -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Include  -mcpu=cortex-m3  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -std=gnu11 -o CMakeFiles\\Multi_Controller.dir\\Core\\Src\\main.c.obj -c C:\\HW\\FW\\Multi_Controller\\Core\\Src\\main.c",
+  "file": "C:\\HW\\FW\\Multi_Controller\\Core\\Src\\main.c",
+  "output": "CMakeFiles\\Multi_Controller.dir\\Core\\Src\\main.c.obj"
+},
+{
+  "directory": "C:/HW/FW/Multi_Controller",
+  "command": "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\arm-none-eabi-gcc.exe -DDEBUG -DSTM32F103xB -DUSE_HAL_DRIVER -IC:/HW/FW/Multi_Controller/USB_DEVICE/App -IC:/HW/FW/Multi_Controller/USB_DEVICE/Target -IC:/HW/FW/Multi_Controller/Core/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Core/Inc -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Device/ST/STM32F1xx/Include -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Include  -mcpu=cortex-m3  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -std=gnu11 -o CMakeFiles\\Multi_Controller.dir\\Core\\Src\\stm32f1xx_it.c.obj -c C:\\HW\\FW\\Multi_Controller\\Core\\Src\\stm32f1xx_it.c",
+  "file": "C:\\HW\\FW\\Multi_Controller\\Core\\Src\\stm32f1xx_it.c",
+  "output": "CMakeFiles\\Multi_Controller.dir\\Core\\Src\\stm32f1xx_it.c.obj"
+},
+{
+  "directory": "C:/HW/FW/Multi_Controller",
+  "command": "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\arm-none-eabi-gcc.exe -DDEBUG -DSTM32F103xB -DUSE_HAL_DRIVER -IC:/HW/FW/Multi_Controller/USB_DEVICE/App -IC:/HW/FW/Multi_Controller/USB_DEVICE/Target -IC:/HW/FW/Multi_Controller/Core/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Core/Inc -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Device/ST/STM32F1xx/Include -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Include  -mcpu=cortex-m3  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -std=gnu11 -o CMakeFiles\\Multi_Controller.dir\\Core\\Src\\stm32f1xx_hal_msp.c.obj -c C:\\HW\\FW\\Multi_Controller\\Core\\Src\\stm32f1xx_hal_msp.c",
+  "file": "C:\\HW\\FW\\Multi_Controller\\Core\\Src\\stm32f1xx_hal_msp.c",
+  "output": "CMakeFiles\\Multi_Controller.dir\\Core\\Src\\stm32f1xx_hal_msp.c.obj"
+},
+{
+  "directory": "C:/HW/FW/Multi_Controller",
+  "command": "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\arm-none-eabi-gcc.exe -DDEBUG -DSTM32F103xB -DUSE_HAL_DRIVER -IC:/HW/FW/Multi_Controller/USB_DEVICE/App -IC:/HW/FW/Multi_Controller/USB_DEVICE/Target -IC:/HW/FW/Multi_Controller/Core/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Core/Inc -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Device/ST/STM32F1xx/Include -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Include  -mcpu=cortex-m3  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -std=gnu11 -o CMakeFiles\\Multi_Controller.dir\\Core\\Src\\sysmem.c.obj -c C:\\HW\\FW\\Multi_Controller\\Core\\Src\\sysmem.c",
+  "file": "C:\\HW\\FW\\Multi_Controller\\Core\\Src\\sysmem.c",
+  "output": "CMakeFiles\\Multi_Controller.dir\\Core\\Src\\sysmem.c.obj"
+},
+{
+  "directory": "C:/HW/FW/Multi_Controller",
+  "command": "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\arm-none-eabi-gcc.exe -DDEBUG -DSTM32F103xB -DUSE_HAL_DRIVER -IC:/HW/FW/Multi_Controller/USB_DEVICE/App -IC:/HW/FW/Multi_Controller/USB_DEVICE/Target -IC:/HW/FW/Multi_Controller/Core/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Core/Inc -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Device/ST/STM32F1xx/Include -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Include  -mcpu=cortex-m3  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -std=gnu11 -o CMakeFiles\\Multi_Controller.dir\\Core\\Src\\syscalls.c.obj -c C:\\HW\\FW\\Multi_Controller\\Core\\Src\\syscalls.c",
+  "file": "C:\\HW\\FW\\Multi_Controller\\Core\\Src\\syscalls.c",
+  "output": "CMakeFiles\\Multi_Controller.dir\\Core\\Src\\syscalls.c.obj"
+},
+{
+  "directory": "C:/HW/FW/Multi_Controller",
+  "command": "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\arm-none-eabi-gcc.exe -DDEBUG -DSTM32F103xB -DUSE_HAL_DRIVER -IC:/HW/FW/Multi_Controller/USB_DEVICE/App -IC:/HW/FW/Multi_Controller/USB_DEVICE/Target -IC:/HW/FW/Multi_Controller/Core/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Core/Inc -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Device/ST/STM32F1xx/Include -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Include  -mcpu=cortex-m3  -x assembler-with-cpp -MMD -MP -g -o CMakeFiles\\Multi_Controller.dir\\startup_stm32f103xb.s.obj -c C:\\HW\\FW\\Multi_Controller\\startup_stm32f103xb.s",
+  "file": "C:\\HW\\FW\\Multi_Controller\\startup_stm32f103xb.s",
+  "output": "CMakeFiles\\Multi_Controller.dir\\startup_stm32f103xb.s.obj"
+},
+{
+  "directory": "C:/HW/FW/Multi_Controller",
+  "command": "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\arm-none-eabi-gcc.exe -DDEBUG -DSTM32F103xB -DUSE_HAL_DRIVER -IC:/HW/FW/Multi_Controller/USB_DEVICE/App -IC:/HW/FW/Multi_Controller/USB_DEVICE/Target -IC:/HW/FW/Multi_Controller/Core/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Core/Inc -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Device/ST/STM32F1xx/Include -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Include  -mcpu=cortex-m3  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -std=gnu11 -o cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Core\\Src\\system_stm32f1xx.c.obj -c C:\\HW\\FW\\Multi_Controller\\Core\\Src\\system_stm32f1xx.c",
+  "file": "C:\\HW\\FW\\Multi_Controller\\Core\\Src\\system_stm32f1xx.c",
+  "output": "cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Core\\Src\\system_stm32f1xx.c.obj"
+},
+{
+  "directory": "C:/HW/FW/Multi_Controller",
+  "command": "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\arm-none-eabi-gcc.exe -DDEBUG -DSTM32F103xB -DUSE_HAL_DRIVER -IC:/HW/FW/Multi_Controller/USB_DEVICE/App -IC:/HW/FW/Multi_Controller/USB_DEVICE/Target -IC:/HW/FW/Multi_Controller/Core/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Core/Inc -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Device/ST/STM32F1xx/Include -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Include  -mcpu=cortex-m3  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -std=gnu11 -o cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_gpio_ex.c.obj -c C:\\HW\\FW\\Multi_Controller\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_gpio_ex.c",
+  "file": "C:\\HW\\FW\\Multi_Controller\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_gpio_ex.c",
+  "output": "cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_gpio_ex.c.obj"
+},
+{
+  "directory": "C:/HW/FW/Multi_Controller",
+  "command": "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\arm-none-eabi-gcc.exe -DDEBUG -DSTM32F103xB -DUSE_HAL_DRIVER -IC:/HW/FW/Multi_Controller/USB_DEVICE/App -IC:/HW/FW/Multi_Controller/USB_DEVICE/Target -IC:/HW/FW/Multi_Controller/Core/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Core/Inc -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Device/ST/STM32F1xx/Include -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Include  -mcpu=cortex-m3  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -std=gnu11 -o cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_pcd.c.obj -c C:\\HW\\FW\\Multi_Controller\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_pcd.c",
+  "file": "C:\\HW\\FW\\Multi_Controller\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_pcd.c",
+  "output": "cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_pcd.c.obj"
+},
+{
+  "directory": "C:/HW/FW/Multi_Controller",
+  "command": "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\arm-none-eabi-gcc.exe -DDEBUG -DSTM32F103xB -DUSE_HAL_DRIVER -IC:/HW/FW/Multi_Controller/USB_DEVICE/App -IC:/HW/FW/Multi_Controller/USB_DEVICE/Target -IC:/HW/FW/Multi_Controller/Core/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Core/Inc -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Device/ST/STM32F1xx/Include -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Include  -mcpu=cortex-m3  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -std=gnu11 -o cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_pcd_ex.c.obj -c C:\\HW\\FW\\Multi_Controller\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_pcd_ex.c",
+  "file": "C:\\HW\\FW\\Multi_Controller\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_pcd_ex.c",
+  "output": "cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_pcd_ex.c.obj"
+},
+{
+  "directory": "C:/HW/FW/Multi_Controller",
+  "command": "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\arm-none-eabi-gcc.exe -DDEBUG -DSTM32F103xB -DUSE_HAL_DRIVER -IC:/HW/FW/Multi_Controller/USB_DEVICE/App -IC:/HW/FW/Multi_Controller/USB_DEVICE/Target -IC:/HW/FW/Multi_Controller/Core/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Core/Inc -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Device/ST/STM32F1xx/Include -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Include  -mcpu=cortex-m3  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -std=gnu11 -o cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_ll_usb.c.obj -c C:\\HW\\FW\\Multi_Controller\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_ll_usb.c",
+  "file": "C:\\HW\\FW\\Multi_Controller\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_ll_usb.c",
+  "output": "cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_ll_usb.c.obj"
+},
+{
+  "directory": "C:/HW/FW/Multi_Controller",
+  "command": "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\arm-none-eabi-gcc.exe -DDEBUG -DSTM32F103xB -DUSE_HAL_DRIVER -IC:/HW/FW/Multi_Controller/USB_DEVICE/App -IC:/HW/FW/Multi_Controller/USB_DEVICE/Target -IC:/HW/FW/Multi_Controller/Core/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Core/Inc -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Device/ST/STM32F1xx/Include -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Include  -mcpu=cortex-m3  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -std=gnu11 -o cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal.c.obj -c C:\\HW\\FW\\Multi_Controller\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal.c",
+  "file": "C:\\HW\\FW\\Multi_Controller\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal.c",
+  "output": "cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal.c.obj"
+},
+{
+  "directory": "C:/HW/FW/Multi_Controller",
+  "command": "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\arm-none-eabi-gcc.exe -DDEBUG -DSTM32F103xB -DUSE_HAL_DRIVER -IC:/HW/FW/Multi_Controller/USB_DEVICE/App -IC:/HW/FW/Multi_Controller/USB_DEVICE/Target -IC:/HW/FW/Multi_Controller/Core/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Core/Inc -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Device/ST/STM32F1xx/Include -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Include  -mcpu=cortex-m3  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -std=gnu11 -o cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_rcc.c.obj -c C:\\HW\\FW\\Multi_Controller\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_rcc.c",
+  "file": "C:\\HW\\FW\\Multi_Controller\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_rcc.c",
+  "output": "cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_rcc.c.obj"
+},
+{
+  "directory": "C:/HW/FW/Multi_Controller",
+  "command": "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\arm-none-eabi-gcc.exe -DDEBUG -DSTM32F103xB -DUSE_HAL_DRIVER -IC:/HW/FW/Multi_Controller/USB_DEVICE/App -IC:/HW/FW/Multi_Controller/USB_DEVICE/Target -IC:/HW/FW/Multi_Controller/Core/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Core/Inc -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Device/ST/STM32F1xx/Include -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Include  -mcpu=cortex-m3  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -std=gnu11 -o cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_rcc_ex.c.obj -c C:\\HW\\FW\\Multi_Controller\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_rcc_ex.c",
+  "file": "C:\\HW\\FW\\Multi_Controller\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_rcc_ex.c",
+  "output": "cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_rcc_ex.c.obj"
+},
+{
+  "directory": "C:/HW/FW/Multi_Controller",
+  "command": "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\arm-none-eabi-gcc.exe -DDEBUG -DSTM32F103xB -DUSE_HAL_DRIVER -IC:/HW/FW/Multi_Controller/USB_DEVICE/App -IC:/HW/FW/Multi_Controller/USB_DEVICE/Target -IC:/HW/FW/Multi_Controller/Core/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Core/Inc -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Device/ST/STM32F1xx/Include -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Include  -mcpu=cortex-m3  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -std=gnu11 -o cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_gpio.c.obj -c C:\\HW\\FW\\Multi_Controller\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_gpio.c",
+  "file": "C:\\HW\\FW\\Multi_Controller\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_gpio.c",
+  "output": "cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_gpio.c.obj"
+},
+{
+  "directory": "C:/HW/FW/Multi_Controller",
+  "command": "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\arm-none-eabi-gcc.exe -DDEBUG -DSTM32F103xB -DUSE_HAL_DRIVER -IC:/HW/FW/Multi_Controller/USB_DEVICE/App -IC:/HW/FW/Multi_Controller/USB_DEVICE/Target -IC:/HW/FW/Multi_Controller/Core/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Core/Inc -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Device/ST/STM32F1xx/Include -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Include  -mcpu=cortex-m3  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -std=gnu11 -o cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_dma.c.obj -c C:\\HW\\FW\\Multi_Controller\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_dma.c",
+  "file": "C:\\HW\\FW\\Multi_Controller\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_dma.c",
+  "output": "cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_dma.c.obj"
+},
+{
+  "directory": "C:/HW/FW/Multi_Controller",
+  "command": "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\arm-none-eabi-gcc.exe -DDEBUG -DSTM32F103xB -DUSE_HAL_DRIVER -IC:/HW/FW/Multi_Controller/USB_DEVICE/App -IC:/HW/FW/Multi_Controller/USB_DEVICE/Target -IC:/HW/FW/Multi_Controller/Core/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Core/Inc -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Device/ST/STM32F1xx/Include -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Include  -mcpu=cortex-m3  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -std=gnu11 -o cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_cortex.c.obj -c C:\\HW\\FW\\Multi_Controller\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_cortex.c",
+  "file": "C:\\HW\\FW\\Multi_Controller\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_cortex.c",
+  "output": "cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_cortex.c.obj"
+},
+{
+  "directory": "C:/HW/FW/Multi_Controller",
+  "command": "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\arm-none-eabi-gcc.exe -DDEBUG -DSTM32F103xB -DUSE_HAL_DRIVER -IC:/HW/FW/Multi_Controller/USB_DEVICE/App -IC:/HW/FW/Multi_Controller/USB_DEVICE/Target -IC:/HW/FW/Multi_Controller/Core/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Core/Inc -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Device/ST/STM32F1xx/Include -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Include  -mcpu=cortex-m3  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -std=gnu11 -o cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_pwr.c.obj -c C:\\HW\\FW\\Multi_Controller\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_pwr.c",
+  "file": "C:\\HW\\FW\\Multi_Controller\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_pwr.c",
+  "output": "cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_pwr.c.obj"
+},
+{
+  "directory": "C:/HW/FW/Multi_Controller",
+  "command": "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\arm-none-eabi-gcc.exe -DDEBUG -DSTM32F103xB -DUSE_HAL_DRIVER -IC:/HW/FW/Multi_Controller/USB_DEVICE/App -IC:/HW/FW/Multi_Controller/USB_DEVICE/Target -IC:/HW/FW/Multi_Controller/Core/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Core/Inc -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Device/ST/STM32F1xx/Include -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Include  -mcpu=cortex-m3  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -std=gnu11 -o cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_flash.c.obj -c C:\\HW\\FW\\Multi_Controller\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_flash.c",
+  "file": "C:\\HW\\FW\\Multi_Controller\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_flash.c",
+  "output": "cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_flash.c.obj"
+},
+{
+  "directory": "C:/HW/FW/Multi_Controller",
+  "command": "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\arm-none-eabi-gcc.exe -DDEBUG -DSTM32F103xB -DUSE_HAL_DRIVER -IC:/HW/FW/Multi_Controller/USB_DEVICE/App -IC:/HW/FW/Multi_Controller/USB_DEVICE/Target -IC:/HW/FW/Multi_Controller/Core/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Core/Inc -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Device/ST/STM32F1xx/Include -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Include  -mcpu=cortex-m3  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -std=gnu11 -o cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_flash_ex.c.obj -c C:\\HW\\FW\\Multi_Controller\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_flash_ex.c",
+  "file": "C:\\HW\\FW\\Multi_Controller\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_flash_ex.c",
+  "output": "cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_flash_ex.c.obj"
+},
+{
+  "directory": "C:/HW/FW/Multi_Controller",
+  "command": "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\arm-none-eabi-gcc.exe -DDEBUG -DSTM32F103xB -DUSE_HAL_DRIVER -IC:/HW/FW/Multi_Controller/USB_DEVICE/App -IC:/HW/FW/Multi_Controller/USB_DEVICE/Target -IC:/HW/FW/Multi_Controller/Core/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Core/Inc -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Device/ST/STM32F1xx/Include -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Include  -mcpu=cortex-m3  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -std=gnu11 -o cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_exti.c.obj -c C:\\HW\\FW\\Multi_Controller\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_exti.c",
+  "file": "C:\\HW\\FW\\Multi_Controller\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_exti.c",
+  "output": "cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_exti.c.obj"
+},
+{
+  "directory": "C:/HW/FW/Multi_Controller",
+  "command": "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\arm-none-eabi-gcc.exe -DDEBUG -DSTM32F103xB -DUSE_HAL_DRIVER -IC:/HW/FW/Multi_Controller/USB_DEVICE/App -IC:/HW/FW/Multi_Controller/USB_DEVICE/Target -IC:/HW/FW/Multi_Controller/Core/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Core/Inc -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Device/ST/STM32F1xx/Include -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Include  -mcpu=cortex-m3  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -std=gnu11 -o cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_tim.c.obj -c C:\\HW\\FW\\Multi_Controller\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_tim.c",
+  "file": "C:\\HW\\FW\\Multi_Controller\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_tim.c",
+  "output": "cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_tim.c.obj"
+},
+{
+  "directory": "C:/HW/FW/Multi_Controller",
+  "command": "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\arm-none-eabi-gcc.exe -DDEBUG -DSTM32F103xB -DUSE_HAL_DRIVER -IC:/HW/FW/Multi_Controller/USB_DEVICE/App -IC:/HW/FW/Multi_Controller/USB_DEVICE/Target -IC:/HW/FW/Multi_Controller/Core/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Core/Inc -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Device/ST/STM32F1xx/Include -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Include  -mcpu=cortex-m3  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -std=gnu11 -o cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_tim_ex.c.obj -c C:\\HW\\FW\\Multi_Controller\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_tim_ex.c",
+  "file": "C:\\HW\\FW\\Multi_Controller\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_tim_ex.c",
+  "output": "cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_tim_ex.c.obj"
+},
+{
+  "directory": "C:/HW/FW/Multi_Controller",
+  "command": "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\arm-none-eabi-gcc.exe -DDEBUG -DSTM32F103xB -DUSE_HAL_DRIVER -IC:/HW/FW/Multi_Controller/USB_DEVICE/App -IC:/HW/FW/Multi_Controller/USB_DEVICE/Target -IC:/HW/FW/Multi_Controller/Core/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Core/Inc -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Device/ST/STM32F1xx/Include -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Include  -mcpu=cortex-m3  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -std=gnu11 -o cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_uart.c.obj -c C:\\HW\\FW\\Multi_Controller\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_uart.c",
+  "file": "C:\\HW\\FW\\Multi_Controller\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_uart.c",
+  "output": "cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_uart.c.obj"
+},
+{
+  "directory": "C:/HW/FW/Multi_Controller",
+  "command": "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\arm-none-eabi-gcc.exe -DDEBUG -DSTM32F103xB -DUSE_HAL_DRIVER -IC:/HW/FW/Multi_Controller/USB_DEVICE/App -IC:/HW/FW/Multi_Controller/USB_DEVICE/Target -IC:/HW/FW/Multi_Controller/Core/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Core/Inc -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Device/ST/STM32F1xx/Include -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Include  -mcpu=cortex-m3  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -std=gnu11 -o cmake\\stm32cubemx\\CMakeFiles\\USB_Device_Library.dir\\__\\__\\Middlewares\\ST\\STM32_USB_Device_Library\\Core\\Src\\usbd_core.c.obj -c C:\\HW\\FW\\Multi_Controller\\Middlewares\\ST\\STM32_USB_Device_Library\\Core\\Src\\usbd_core.c",
+  "file": "C:\\HW\\FW\\Multi_Controller\\Middlewares\\ST\\STM32_USB_Device_Library\\Core\\Src\\usbd_core.c",
+  "output": "cmake\\stm32cubemx\\CMakeFiles\\USB_Device_Library.dir\\__\\__\\Middlewares\\ST\\STM32_USB_Device_Library\\Core\\Src\\usbd_core.c.obj"
+},
+{
+  "directory": "C:/HW/FW/Multi_Controller",
+  "command": "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\arm-none-eabi-gcc.exe -DDEBUG -DSTM32F103xB -DUSE_HAL_DRIVER -IC:/HW/FW/Multi_Controller/USB_DEVICE/App -IC:/HW/FW/Multi_Controller/USB_DEVICE/Target -IC:/HW/FW/Multi_Controller/Core/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Core/Inc -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Device/ST/STM32F1xx/Include -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Include  -mcpu=cortex-m3  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -std=gnu11 -o cmake\\stm32cubemx\\CMakeFiles\\USB_Device_Library.dir\\__\\__\\Middlewares\\ST\\STM32_USB_Device_Library\\Core\\Src\\usbd_ctlreq.c.obj -c C:\\HW\\FW\\Multi_Controller\\Middlewares\\ST\\STM32_USB_Device_Library\\Core\\Src\\usbd_ctlreq.c",
+  "file": "C:\\HW\\FW\\Multi_Controller\\Middlewares\\ST\\STM32_USB_Device_Library\\Core\\Src\\usbd_ctlreq.c",
+  "output": "cmake\\stm32cubemx\\CMakeFiles\\USB_Device_Library.dir\\__\\__\\Middlewares\\ST\\STM32_USB_Device_Library\\Core\\Src\\usbd_ctlreq.c.obj"
+},
+{
+  "directory": "C:/HW/FW/Multi_Controller",
+  "command": "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\arm-none-eabi-gcc.exe -DDEBUG -DSTM32F103xB -DUSE_HAL_DRIVER -IC:/HW/FW/Multi_Controller/USB_DEVICE/App -IC:/HW/FW/Multi_Controller/USB_DEVICE/Target -IC:/HW/FW/Multi_Controller/Core/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Core/Inc -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Device/ST/STM32F1xx/Include -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Include  -mcpu=cortex-m3  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -std=gnu11 -o cmake\\stm32cubemx\\CMakeFiles\\USB_Device_Library.dir\\__\\__\\Middlewares\\ST\\STM32_USB_Device_Library\\Core\\Src\\usbd_ioreq.c.obj -c C:\\HW\\FW\\Multi_Controller\\Middlewares\\ST\\STM32_USB_Device_Library\\Core\\Src\\usbd_ioreq.c",
+  "file": "C:\\HW\\FW\\Multi_Controller\\Middlewares\\ST\\STM32_USB_Device_Library\\Core\\Src\\usbd_ioreq.c",
+  "output": "cmake\\stm32cubemx\\CMakeFiles\\USB_Device_Library.dir\\__\\__\\Middlewares\\ST\\STM32_USB_Device_Library\\Core\\Src\\usbd_ioreq.c.obj"
+},
+{
+  "directory": "C:/HW/FW/Multi_Controller",
+  "command": "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\arm-none-eabi-gcc.exe -DDEBUG -DSTM32F103xB -DUSE_HAL_DRIVER -IC:/HW/FW/Multi_Controller/USB_DEVICE/App -IC:/HW/FW/Multi_Controller/USB_DEVICE/Target -IC:/HW/FW/Multi_Controller/Core/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc -IC:/HW/FW/Multi_Controller/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Core/Inc -IC:/HW/FW/Multi_Controller/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Device/ST/STM32F1xx/Include -IC:/HW/FW/Multi_Controller/Drivers/CMSIS/Include  -mcpu=cortex-m3  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -std=gnu11 -o cmake\\stm32cubemx\\CMakeFiles\\USB_Device_Library.dir\\__\\__\\Middlewares\\ST\\STM32_USB_Device_Library\\Class\\CDC\\Src\\usbd_cdc.c.obj -c C:\\HW\\FW\\Multi_Controller\\Middlewares\\ST\\STM32_USB_Device_Library\\Class\\CDC\\Src\\usbd_cdc.c",
+  "file": "C:\\HW\\FW\\Multi_Controller\\Middlewares\\ST\\STM32_USB_Device_Library\\Class\\CDC\\Src\\usbd_cdc.c",
+  "output": "cmake\\stm32cubemx\\CMakeFiles\\USB_Device_Library.dir\\__\\__\\Middlewares\\ST\\STM32_USB_Device_Library\\Class\\CDC\\Src\\usbd_cdc.c.obj"
+}
+]
