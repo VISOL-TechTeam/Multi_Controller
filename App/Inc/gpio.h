@@ -59,6 +59,7 @@ typedef struct
 
 enum
 {
+    ALL_EDGE = 0,
     LOW_EDGE = 1,
     HIGH_EDGE = 2,
 };

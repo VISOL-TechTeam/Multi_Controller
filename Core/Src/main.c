@@ -137,21 +137,21 @@ int main(void)
 	HAL_GPIO_WritePin(Dial_LED_1_GPIO_Port, Dial_LED_1_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(Dial_LED_2_GPIO_Port, Dial_LED_2_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(Dial_LED_3_GPIO_Port, Dial_LED_3_Pin, GPIO_PIN_SET);
-	
+
 	// 시스템 상태 초기화
 	InitSystemState();
-	
+
 	// 통신 데이터 초기화
 	g_systemState.comm.sendData[0] = 0x02;
 	g_systemState.comm.sendData[1] = 0xA4;
 	g_systemState.comm.sendData[2] = 0x32;
 	g_systemState.comm.sendData[3] = 0x34;
-	g_systemState.comm.sendData[4] = 0x30;	 // key
-	g_systemState.comm.sendData[5] = 0x30;	 // key
-	g_systemState.comm.sendData[6] = 0x30;	 // dial
-	g_systemState.comm.sendData[7] = 0x30;	 // trigger
-	g_systemState.comm.sendData[8] = 0x30;	 // trigger
-	g_systemState.comm.sendData[9] = 0x30;	 // crc
+	g_systemState.comm.sendData[4] = 0x30;	// key
+	g_systemState.comm.sendData[5] = 0x30;	// key
+	g_systemState.comm.sendData[6] = 0x30;	// dial
+	g_systemState.comm.sendData[7] = 0x30;	// trigger
+	g_systemState.comm.sendData[8] = 0x30;	// trigger
+	g_systemState.comm.sendData[9] = 0x30;	// crc
 	g_systemState.comm.sendData[10] = 0x30; // crc
 	g_systemState.comm.sendData[11] = 0x03;
 	/* USER CODE END 1 */
@@ -182,6 +182,10 @@ int main(void)
 	HAL_TIM_Base_Start_IT(&htim1);
 	g_systemState.triggers.trigger_in_Old1 = HAL_GPIO_ReadPin(Trigger_IN_1_GPIO_Port, Trigger_IN_1_Pin);
 	g_systemState.triggers.trigger_in_Old2 = HAL_GPIO_ReadPin(Trigger_IN_2_GPIO_Port, Trigger_IN_2_Pin);
+
+	HAL_GPIO_WritePin(Trigger_OUT_1_GPIO_Port, Trigger_OUT_1_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(Trigger_OUT_2_GPIO_Port, Trigger_OUT_2_Pin, GPIO_PIN_RESET);
+
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
@@ -192,10 +196,10 @@ int main(void)
 
 		/* USER CODE BEGIN 3 */
 		USB_minipc();
-		
+
 		// 로터리 인코더 처리
 		ProcessEncoder();
-		
+
 		// LED 상태 처리
 		ProcessLEDState();
 
@@ -213,18 +217,18 @@ int main(void)
 		g_systemState.buttons.memory2Button = HAL_GPIO_ReadPin(Memory_2_GPIO_Port, Memory_2_Pin);
 		g_systemState.buttons.memory3Button = HAL_GPIO_ReadPin(Memory_3_GPIO_Port, Memory_3_Pin);
 		g_systemState.buttons.memory4Button = HAL_GPIO_ReadPin(Memory_4_GPIO_Port, Memory_4_Pin);
-		
+
 		// 버튼 처리
 		ProcessAllButtons();
-		
+
 		// 부저 처리
 		if (g_systemState.timers.keyCount == 50)
 		{
 			Buzzer_timer = 0;
 			HAL_GPIO_WritePin(BUZZER_GPIO_Port, BUZZER_Pin, GPIO_PIN_SET);
 		}
-		
-		//트리거 처리
+
+		// 트리거 처리
 		ProcessTriggers();
 	}
 	/* USER CODE END 3 */
@@ -473,7 +477,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	{
 		g_systemState.timers.ledTimer = 0;
 		g_systemState.timers.ledCount++;
-		if (g_systemState.timers.ledCount >= 100){
+		if (g_systemState.timers.ledCount >= 100)
+		{
 			HAL_GPIO_TogglePin(System_LED_GPIO_Port, System_LED_Pin);
 			g_systemState.timers.ledCount = 0;
 		}

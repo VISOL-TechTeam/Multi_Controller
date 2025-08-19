@@ -9,6 +9,8 @@ SystemState_t g_systemState = {0};
 extern uint8_t Pad_calculate_crc8(void);
 extern uint8_t CDC_Transmit_FS(uint8_t *Buf, uint16_t Len);
 
+uint8_t _get_trigger_out_state(bool trigger_out1, bool trigger_out2);
+
 // 시스템 상태 초기화
 void InitSystemState(void)
 {
@@ -50,6 +52,8 @@ __attribute__((optimize("O0"))) static void ProcessButtonPress(uint8_t buttonPre
     if (buttonPressed == 1 && g_systemState.state == expectedState)
     {
         g_systemState.comm.sendData[dataIndex] = commandCode;
+
+        g_systemState.comm.sendData[8] = _get_trigger_out_state(g_systemState.triggers.trigger_out1, g_systemState.triggers.trigger_out2);
         Pad_calculate_crc8();
         g_systemState.comm.sendData[9] = g_systemState.comm.crc1;
         g_systemState.comm.sendData[10] = g_systemState.comm.crc2;
@@ -67,6 +71,8 @@ __attribute__((optimize("O0"))) static void ProcessMemoryLongPress(uint8_t comma
     if (g_systemState.timers.longKeycount == 1)
     {
         g_systemState.comm.sendData[5] = commandCode;
+
+        g_systemState.comm.sendData[8] = _get_trigger_out_state(g_systemState.triggers.trigger_out1, g_systemState.triggers.trigger_out2);
         Pad_calculate_crc8();
         g_systemState.comm.sendData[9] = g_systemState.comm.crc1;
         g_systemState.comm.sendData[10] = g_systemState.comm.crc2;
@@ -85,6 +91,8 @@ static void ProcessUpButtonLongPress(void)
     if (g_systemState.timers.longKeycount == 1)
     {
         g_systemState.comm.sendData[4] = 0x50;
+
+        g_systemState.comm.sendData[8] = _get_trigger_out_state(g_systemState.triggers.trigger_out1, g_systemState.triggers.trigger_out2);
         Pad_calculate_crc8();
         g_systemState.comm.sendData[9] = g_systemState.comm.crc1;
         g_systemState.comm.sendData[10] = g_systemState.comm.crc2;
@@ -213,6 +221,8 @@ void ProcessEncoder(void)
             HAL_GPIO_WritePin(Dial_LED_3_GPIO_Port, Dial_LED_3_Pin, GPIO_PIN_SET);
             HAL_GPIO_WritePin(Dial_LED_1_GPIO_Port, Dial_LED_1_Pin, GPIO_PIN_RESET);
             g_systemState.comm.sendData[6] = 0x32;
+
+            g_systemState.comm.sendData[8] = _get_trigger_out_state(g_systemState.triggers.trigger_out1, g_systemState.triggers.trigger_out2);
             Pad_calculate_crc8();
             g_systemState.comm.sendData[9] = g_systemState.comm.crc1;
             g_systemState.comm.sendData[10] = g_systemState.comm.crc2;
@@ -237,6 +247,8 @@ void ProcessEncoder(void)
                 HAL_GPIO_WritePin(Dial_LED_2_GPIO_Port, Dial_LED_2_Pin, GPIO_PIN_SET);
                 HAL_GPIO_WritePin(Dial_LED_3_GPIO_Port, Dial_LED_3_Pin, GPIO_PIN_RESET);
                 g_systemState.comm.sendData[6] = 0x31;
+
+                g_systemState.comm.sendData[8] = _get_trigger_out_state(g_systemState.triggers.trigger_out1, g_systemState.triggers.trigger_out2);
                 Pad_calculate_crc8();
                 g_systemState.comm.sendData[9] = g_systemState.comm.crc1;
                 g_systemState.comm.sendData[10] = g_systemState.comm.crc2;
@@ -280,66 +292,80 @@ void ProcessLEDState(void)
 // 트리거 처리 함수
 __attribute__((optimize("O0"))) void ProcessTriggers(void)
 {
+    bool send_packet = false;
+    uint8_t active_trigger_num = 0;
+
     // 트리거 1 처리
+    // CPC1017 릴레이에 의해 0 -> 1 하강엣지 트리거 | 1 -> 0 상승엣지 트리거로 반전되어 인식한다
     switch (g_systemState.triggers.trigger_in1)
     {
     case 1: // 1 = LOW , 0 = HIGH | 0->1 하강엣지 트리거 | 1->0 상승엣지 트리거
-        if (g_systemState.triggers.trigger_in1 != g_systemState.triggers.trigger_in_Old1 && g_systemState.triggers.trigger_in_setup_1 == LOW_EDGE)
+        if (g_systemState.triggers.trigger_in1 != g_systemState.triggers.trigger_in_Old1 &&
+            (g_systemState.triggers.trigger_in_setup_1 == ALL_EDGE || g_systemState.triggers.trigger_in_setup_1 == LOW_EDGE))
         {
-            g_systemState.comm.sendData[7] = 0x31;
-            Pad_calculate_crc8();
-            g_systemState.comm.sendData[9] = g_systemState.comm.crc1;
-            g_systemState.comm.sendData[10] = g_systemState.comm.crc2;
-            CDC_Transmit_FS((uint8_t *)g_systemState.comm.sendData, sizeof(g_systemState.comm.sendData));
-
-            g_systemState.comm.sendData[7] = 0x30;
+            g_systemState.comm.sendData[7] = 0x32; // TR1 폴링
+            send_packet = true;
+            active_trigger_num = 1;
         }
         break;
 
     case 0: // 상승엣지 트리거
-        if (g_systemState.triggers.trigger_in1 != g_systemState.triggers.trigger_in_Old1 && g_systemState.triggers.trigger_in_setup_1 == HIGH_EDGE)
+        if (g_systemState.triggers.trigger_in1 != g_systemState.triggers.trigger_in_Old1 &&
+            (g_systemState.triggers.trigger_in_setup_1 == ALL_EDGE || g_systemState.triggers.trigger_in_setup_1 == HIGH_EDGE))
         {
-            g_systemState.comm.sendData[7] = 0x31;
-            Pad_calculate_crc8();
-            g_systemState.comm.sendData[9] = g_systemState.comm.crc1;
-            g_systemState.comm.sendData[10] = g_systemState.comm.crc2;
-            CDC_Transmit_FS((uint8_t *)g_systemState.comm.sendData, sizeof(g_systemState.comm.sendData));
-
-            g_systemState.comm.sendData[7] = 0x30;
+            g_systemState.comm.sendData[7] = 0x31; // TR1 라이징
+            send_packet = true;
+            active_trigger_num = 1;
         }
         break;
     }
 
     // 트리거 2 처리
-    switch (g_systemState.triggers.trigger_in2)
+    switch (g_systemState.triggers.trigger_in2 && send_packet == false)
     {
     case 1: // 하강엣지 트리거
-        if (g_systemState.triggers.trigger_in2 != g_systemState.triggers.trigger_in_Old2 && g_systemState.triggers.trigger_in_setup_2 == LOW_EDGE)
+        if (g_systemState.triggers.trigger_in2 != g_systemState.triggers.trigger_in_Old2 &&
+            (g_systemState.triggers.trigger_in_setup_2 == ALL_EDGE || g_systemState.triggers.trigger_in_setup_2 == LOW_EDGE))
         {
-            g_systemState.comm.sendData[8] = 0x32;
-            Pad_calculate_crc8();
-            g_systemState.comm.sendData[9] = g_systemState.comm.crc1;
-            g_systemState.comm.sendData[10] = g_systemState.comm.crc2;
-            CDC_Transmit_FS((uint8_t *)g_systemState.comm.sendData, sizeof(g_systemState.comm.sendData));
-
-            g_systemState.comm.sendData[8] = 0x30;
+            g_systemState.comm.sendData[7] = 0x34;
+            send_packet = true;
+            active_trigger_num = 2;
         }
         break;
 
     case 0: // 상승엣지 트리거
-        if (g_systemState.triggers.trigger_in2 != g_systemState.triggers.trigger_in_Old2 && g_systemState.triggers.trigger_in_setup_2 == HIGH_EDGE)
+        if (g_systemState.triggers.trigger_in2 != g_systemState.triggers.trigger_in_Old2 &&
+            (g_systemState.triggers.trigger_in_setup_2 == ALL_EDGE || g_systemState.triggers.trigger_in_setup_2 == HIGH_EDGE))
         {
-            g_systemState.comm.sendData[8] = 0x32;
-            Pad_calculate_crc8();
-            g_systemState.comm.sendData[9] = g_systemState.comm.crc1;
-            g_systemState.comm.sendData[10] = g_systemState.comm.crc2;
-            CDC_Transmit_FS((uint8_t *)g_systemState.comm.sendData, sizeof(g_systemState.comm.sendData));
-
-            g_systemState.comm.sendData[8] = 0x30;
+            g_systemState.comm.sendData[7] = 0x33;
+            send_packet = true;
+            active_trigger_num = 2;
         }
         break;
     }
 
-    g_systemState.triggers.trigger_in_Old1 = g_systemState.triggers.trigger_in1;
-    g_systemState.triggers.trigger_in_Old2 = g_systemState.triggers.trigger_in2;
+    if (send_packet == true)
+    {
+        g_systemState.comm.sendData[8] = _get_trigger_out_state(g_systemState.triggers.trigger_out1, g_systemState.triggers.trigger_out2);
+        Pad_calculate_crc8();
+        g_systemState.comm.sendData[9] = g_systemState.comm.crc1;
+        g_systemState.comm.sendData[10] = g_systemState.comm.crc2;
+        CDC_Transmit_FS((uint8_t *)g_systemState.comm.sendData, sizeof(g_systemState.comm.sendData));
+
+        g_systemState.comm.sendData[7] = 0x30;
+
+        if (active_trigger_num == 1)
+        {
+            g_systemState.triggers.trigger_in_Old1 = g_systemState.triggers.trigger_in1;
+        }
+        else if (active_trigger_num == 2)
+        {
+            g_systemState.triggers.trigger_in_Old2 = g_systemState.triggers.trigger_in2;
+        }
+    }
+}
+
+uint8_t _get_trigger_out_state(bool trigger_out1, bool trigger_out2)
+{
+    return 0x30 + trigger_out1 + (trigger_out2 << 1);
 }
