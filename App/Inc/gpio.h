@@ -5,7 +5,8 @@
 #include <stdbool.h>
 
 // 버튼 상태 정의
-typedef enum {
+typedef enum
+{
     BUTTON_STATE_IDLE = 0,
     BUTTON_STATE_UP = 1,
     BUTTON_STATE_DOWN = 2,
@@ -19,7 +20,8 @@ typedef enum {
 } ButtonState_t;
 
 // 버튼 상태 구조체
-typedef struct {
+typedef struct
+{
     uint8_t upButton;
     uint8_t downButton;
     uint8_t powerButton;
@@ -32,7 +34,8 @@ typedef struct {
 } ButtonInputs_t;
 
 // 타이머 및 카운터 구조체
-typedef struct {
+typedef struct
+{
     int keyCount;
     int longKeycount;
     unsigned short keyTimer;
@@ -42,17 +45,27 @@ typedef struct {
 } TimerCounters_t;
 
 // 트리거 상태 구조체
-typedef struct {
-    uint8_t triggIn1;
-    uint8_t triggIn2;
-    uint8_t trigginState1;
-    uint8_t trigginState2;
-    uint8_t triggerState;
-    uint8_t triggerState2;
+typedef struct
+{
+    uint8_t trigger_in1;
+    uint8_t trigger_in2;
+    uint8_t trigger_in_Old1;
+    uint8_t trigger_in_Old2;
+    uint8_t trigger_in_setup_1;
+    uint8_t trigger_in_setup_2;
+    uint8_t trigger_out1;
+    uint8_t trigger_out2;
 } TriggerStates_t;
 
+enum
+{
+    LOW_EDGE = 1,
+    HIGH_EDGE = 2,
+};
+
 // 로터리 인코더 구조체
-typedef struct {
+typedef struct
+{
     int currentStateCLK;
     int lastStateCLK;
     uint8_t dtState;
@@ -61,14 +74,16 @@ typedef struct {
 } EncoderStates_t;
 
 // 통신 데이터 구조체
-typedef struct {
+typedef struct
+{
     uint8_t sendData[12];
     uint8_t crc1;
     uint8_t crc2;
 } CommData_t;
 
 // 전체 시스템 상태 구조체
-typedef struct {
+typedef struct
+{
     ButtonInputs_t buttons;
     TimerCounters_t timers;
     TriggerStates_t triggers;

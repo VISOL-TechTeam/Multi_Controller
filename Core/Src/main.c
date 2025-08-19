@@ -105,7 +105,6 @@ static unsigned short Buzzer_timer = 0;			// 부저 타이머
 static unsigned short Buzzer_count = 0;			// 부저 동작 카운터
 
 // 테스트 및 디버깅용 버퍼
-uint8_t test[2048];			   // 테스트용 대용량 버퍼
 uint8_t gGlobal_resetBuf[100]; // 리셋 버퍼
 uint8_t testbuf[100];		   // 테스트용 임시 버퍼
 
@@ -181,7 +180,8 @@ int main(void)
 	/* USER CODE BEGIN 2 */
 
 	HAL_TIM_Base_Start_IT(&htim1);
-
+	g_systemState.triggers.trigger_in_Old1 = HAL_GPIO_ReadPin(Trigger_IN_1_GPIO_Port, Trigger_IN_1_Pin);
+	g_systemState.triggers.trigger_in_Old2 = HAL_GPIO_ReadPin(Trigger_IN_2_GPIO_Port, Trigger_IN_2_Pin);
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
@@ -200,8 +200,10 @@ int main(void)
 		ProcessLEDState();
 
 		// GPIO 입력 상태 업데이트
-		g_systemState.triggers.triggIn1 = HAL_GPIO_ReadPin(Trigger_IN_1_GPIO_Port, Trigger_IN_1_Pin);
-		g_systemState.triggers.triggIn2 = HAL_GPIO_ReadPin(Trigger_IN_2_GPIO_Port, Trigger_IN_2_Pin);
+		g_systemState.triggers.trigger_in1 = HAL_GPIO_ReadPin(Trigger_IN_1_GPIO_Port, Trigger_IN_1_Pin);
+		g_systemState.triggers.trigger_in2 = HAL_GPIO_ReadPin(Trigger_IN_2_GPIO_Port, Trigger_IN_2_Pin);
+		g_systemState.triggers.trigger_out1 = HAL_GPIO_ReadPin(Trigger_OUT_1_GPIO_Port, Trigger_OUT_1_Pin);
+		g_systemState.triggers.trigger_out2 = HAL_GPIO_ReadPin(Trigger_OUT_2_GPIO_Port, Trigger_OUT_2_Pin);
 		g_systemState.buttons.upButton = HAL_GPIO_ReadPin(UP_GPIO_Port, UP_Pin);
 		g_systemState.buttons.downButton = HAL_GPIO_ReadPin(DOWN_GPIO_Port, DOWN_Pin);
 		g_systemState.buttons.powerButton = HAL_GPIO_ReadPin(POWRAY_ON_GPIO_Port, POWRAY_ON_Pin);

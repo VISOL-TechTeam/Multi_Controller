@@ -278,81 +278,68 @@ void ProcessLEDState(void)
 }
 
 // 트리거 처리 함수
-void ProcessTriggers(void)
+__attribute__((optimize("O0"))) void ProcessTriggers(void)
 {
     // 트리거 1 처리
-    switch (g_systemState.triggers.trigginState1)
+    switch (g_systemState.triggers.trigger_in1)
     {
-    case 1: // 하강엣지 트리거
-        if (g_systemState.triggers.triggIn1 == 0 && g_systemState.triggers.triggerState == 0)
+    case 1: // 1 = LOW , 0 = HIGH | 0->1 하강엣지 트리거 | 1->0 상승엣지 트리거
+        if (g_systemState.triggers.trigger_in1 != g_systemState.triggers.trigger_in_Old1 && g_systemState.triggers.trigger_in_setup_1 == LOW_EDGE)
         {
             g_systemState.comm.sendData[7] = 0x31;
             Pad_calculate_crc8();
             g_systemState.comm.sendData[9] = g_systemState.comm.crc1;
             g_systemState.comm.sendData[10] = g_systemState.comm.crc2;
             CDC_Transmit_FS((uint8_t *)g_systemState.comm.sendData, sizeof(g_systemState.comm.sendData));
+
             g_systemState.comm.sendData[7] = 0x30;
-            g_systemState.triggers.triggerState = 1;
-        }
-        else if (g_systemState.triggers.triggIn1 == 1)
-        {
-            g_systemState.triggers.triggerState = 0;
         }
         break;
 
-    case 2: // 상승엣지 트리거
-        if (g_systemState.triggers.triggIn1 == 0)
-        {
-            g_systemState.triggers.triggerState = 5;
-        }
-        else if (g_systemState.triggers.triggIn1 == 1 && g_systemState.triggers.triggerState == 5)
+    case 0: // 상승엣지 트리거
+        if (g_systemState.triggers.trigger_in1 != g_systemState.triggers.trigger_in_Old1 && g_systemState.triggers.trigger_in_setup_1 == HIGH_EDGE)
         {
             g_systemState.comm.sendData[7] = 0x31;
             Pad_calculate_crc8();
             g_systemState.comm.sendData[9] = g_systemState.comm.crc1;
             g_systemState.comm.sendData[10] = g_systemState.comm.crc2;
             CDC_Transmit_FS((uint8_t *)g_systemState.comm.sendData, sizeof(g_systemState.comm.sendData));
+
             g_systemState.comm.sendData[7] = 0x30;
-            g_systemState.triggers.triggerState = 1;
         }
         break;
     }
 
     // 트리거 2 처리
-    switch (g_systemState.triggers.trigginState2)
+    switch (g_systemState.triggers.trigger_in2)
     {
     case 1: // 하강엣지 트리거
-        if (g_systemState.triggers.triggIn2 == 0 && g_systemState.triggers.triggerState2 == 10)
+        if (g_systemState.triggers.trigger_in2 != g_systemState.triggers.trigger_in_Old2 && g_systemState.triggers.trigger_in_setup_2 == LOW_EDGE)
         {
             g_systemState.comm.sendData[8] = 0x32;
             Pad_calculate_crc8();
             g_systemState.comm.sendData[9] = g_systemState.comm.crc1;
             g_systemState.comm.sendData[10] = g_systemState.comm.crc2;
             CDC_Transmit_FS((uint8_t *)g_systemState.comm.sendData, sizeof(g_systemState.comm.sendData));
+
             g_systemState.comm.sendData[8] = 0x30;
-            g_systemState.triggers.triggerState2 = 1;
-        }
-        else if (g_systemState.triggers.triggIn2 == 1)
-        {
-            g_systemState.triggers.triggerState2 = 10;
         }
         break;
 
-    case 2: // 상승엣지 트리거
-        if (g_systemState.triggers.triggIn2 == 0)
-        {
-            g_systemState.triggers.triggerState2 = 15;
-        }
-        else if (g_systemState.triggers.triggIn2 == 1 && g_systemState.triggers.triggerState2 == 15)
+    case 0: // 상승엣지 트리거
+        if (g_systemState.triggers.trigger_in2 != g_systemState.triggers.trigger_in_Old2 && g_systemState.triggers.trigger_in_setup_2 == HIGH_EDGE)
         {
             g_systemState.comm.sendData[8] = 0x32;
             Pad_calculate_crc8();
             g_systemState.comm.sendData[9] = g_systemState.comm.crc1;
             g_systemState.comm.sendData[10] = g_systemState.comm.crc2;
             CDC_Transmit_FS((uint8_t *)g_systemState.comm.sendData, sizeof(g_systemState.comm.sendData));
+
             g_systemState.comm.sendData[8] = 0x30;
-            g_systemState.triggers.triggerState2 = 1;
         }
         break;
     }
+
+    g_systemState.triggers.trigger_in_Old1 = g_systemState.triggers.trigger_in1;
+    g_systemState.triggers.trigger_in_Old2 = g_systemState.triggers.trigger_in2;
 }
