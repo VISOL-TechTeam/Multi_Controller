@@ -15,8 +15,8 @@
             "servertype": "stlink",
             "device": "STM32F103R8Tx", //MCU used
             "interface": "swd",
-            // V3 : 0020000A4741500520383733 , V2 : 50FF67067182575118240387
-            "serialNumber": "0020000A4741500520383733",        //Set ST-Link ID if you use multiple at the same time 
+            // V3 : 0020000A4741500520383733 , V2 : 50FF67067182575118240387 / 50FF6D066675545741151387
+            "serialNumber": "50FF6D066675545741151387",        //Set ST-Link ID if you use multiple at the same time 
             "runToEntryPoint": "main",
             "svdFile": "${config:STM32VSCodeExtension.cubeCLT.path}/STMicroelectronics_CMSIS_SVD/STM32F103.svd",
             "v1": false,               //Change it depending on ST Link version

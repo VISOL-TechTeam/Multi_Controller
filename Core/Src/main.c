@@ -195,6 +195,22 @@ int main(void)
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
+
+		if (g_systemState.comm.sendData[0] != 0x02)
+		{ // 통신 데이터 초기화
+			g_systemState.comm.sendData[0] = 0x02;
+			g_systemState.comm.sendData[1] = 0xA4;
+			g_systemState.comm.sendData[2] = 0x32;
+			g_systemState.comm.sendData[3] = 0x34;
+			g_systemState.comm.sendData[4] = 0x30;	// key
+			g_systemState.comm.sendData[5] = 0x30;	// key
+			g_systemState.comm.sendData[6] = 0x30;	// dial
+			g_systemState.comm.sendData[7] = 0x30;	// trigger
+			g_systemState.comm.sendData[8] = 0x30;	// trigger
+			g_systemState.comm.sendData[9] = 0x30;	// crc
+			g_systemState.comm.sendData[10] = 0x30; // crc
+			g_systemState.comm.sendData[11] = 0x03;
+		}
 		USB_minipc();
 
 		// 로터리 인코더 처리
