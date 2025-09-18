@@ -320,28 +320,31 @@ __attribute__((optimize("O0"))) void ProcessTriggers(void)
         break;
     }
 
-    // 트리거 2 처리
-    switch (g_systemState.triggers.trigger_in2 && send_packet == false)
+    // 트리거 2 처리 (트리거 1에서 이미 패킷이 준비된 경우에는 스킵)
+    if (send_packet == false)
     {
-    case 1: // 하강엣지 트리거
-        if (g_systemState.triggers.trigger_in2 != g_systemState.triggers.trigger_in_Old2 &&
-            (g_systemState.triggers.trigger_in_setup_2 == ALL_EDGE || g_systemState.triggers.trigger_in_setup_2 == LOW_EDGE))
+        switch (g_systemState.triggers.trigger_in2)
         {
-            g_systemState.comm.sendData[7] = 0x34;
-            send_packet = true;
-            active_trigger_num = 2;
-        }
-        break;
+        case 1: // 하강엣지 트리거
+            if (g_systemState.triggers.trigger_in2 != g_systemState.triggers.trigger_in_Old2 &&
+                (g_systemState.triggers.trigger_in_setup_2 == ALL_EDGE || g_systemState.triggers.trigger_in_setup_2 == LOW_EDGE))
+            {
+                g_systemState.comm.sendData[7] = 0x34;
+                send_packet = true;
+                active_trigger_num = 2;
+            }
+            break;
 
-    case 0: // 상승엣지 트리거
-        if (g_systemState.triggers.trigger_in2 != g_systemState.triggers.trigger_in_Old2 &&
-            (g_systemState.triggers.trigger_in_setup_2 == ALL_EDGE || g_systemState.triggers.trigger_in_setup_2 == HIGH_EDGE))
-        {
-            g_systemState.comm.sendData[7] = 0x33;
-            send_packet = true;
-            active_trigger_num = 2;
+        case 0: // 상승엣지 트리거
+            if (g_systemState.triggers.trigger_in2 != g_systemState.triggers.trigger_in_Old2 &&
+                (g_systemState.triggers.trigger_in_setup_2 == ALL_EDGE || g_systemState.triggers.trigger_in_setup_2 == HIGH_EDGE))
+            {
+                g_systemState.comm.sendData[7] = 0x33;
+                send_packet = true;
+                active_trigger_num = 2;
+            }
+            break;
         }
-        break;
     }
 
     if (send_packet == true)
