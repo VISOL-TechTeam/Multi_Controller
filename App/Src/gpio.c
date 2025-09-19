@@ -349,6 +349,7 @@ __attribute__((optimize("O0"))) void ProcessTriggers(void)
 
     if (send_packet == true)
     {
+        send_packet = false;
         g_systemState.comm.sendData[8] = _get_trigger_out_state(g_systemState.triggers.trigger_out1, g_systemState.triggers.trigger_out2);
         Pad_calculate_crc8();
         g_systemState.comm.sendData[9] = g_systemState.comm.crc1;

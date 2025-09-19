@@ -13,7 +13,7 @@ extern uint8_t gGlobal_trigginState2;
 extern uint8_t gGlobal_crc1;
 extern uint8_t gGlobal_crc2;
 extern int gGlobal_Rxindx;
-extern uint8_t gGlobal_rxData[2];
+extern uint8_t gGlobal_rxData;
 extern uint8_t gGlobal_rxBuffer[100];
 extern uint8_t gGlobal_tmpBuffer[100];
 extern uint8_t test[2048];

@@ -49,9 +49,9 @@
   */
 
 /* USER CODE BEGIN PRIVATE_TYPES */
-extern uint16_t gGlobal_Buffer[2048];//64
+extern uint8_t gGlobal_Buffer[2048];//64
 extern uint8_t gGlobal_usbToggle;
-extern uint8_t gGlobal_usbLen;
+extern uint32_t gGlobal_usbLen;
 /* USER CODE END PRIVATE_TYPES */
 
 /**
@@ -268,9 +268,14 @@ static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
   //CDC_Transmit_FS(Buf, Buf);
 
   uint32_t len = *Len;
+  // 버퍼 오버플로우 방지
+  if (len > sizeof(gGlobal_Buffer)) {
+    len = sizeof(gGlobal_Buffer);
+  }
+  
   memset (gGlobal_Buffer, '\0', sizeof(gGlobal_Buffer));  // clear the buffer
   memcpy(gGlobal_Buffer, Buf, len);  // copy the data to the buffer
-  memset(Buf, '\0', len);   // clear the Buf also
+  memset(Buf, '\0', *Len);   // clear the Buf also
   gGlobal_usbLen = len;
   gGlobal_usbToggle = 1;
   return (USBD_OK);

@@ -79,7 +79,7 @@ uint8_t dtState = 0;
 int gGlobal_Rxindx;				 // 수신 데이터 인덱스
 int gGlobal_keyCount = 0;		 // 키 입력 카운터
 int gGlobal_longKeycount = 0;	 // 긴 키 입력 카운터
-uint8_t gGlobal_rxData[2];		 // UART 수신 데이터 버퍼
+uint8_t gGlobal_rxData;			 // UART 수신 데이터 버퍼
 uint8_t gGlobal_rxBuffer[100];	 // UART 수신 처리 버퍼
 uint8_t gGlobal_tmpBuffer[100];	 // 임시 데이터 버퍼
 uint8_t gGlobal_usbBuffer[2048]; // USB 통신 버퍼
@@ -178,6 +178,7 @@ int main(void)
 	MX_USART1_UART_Init();
 	MX_TIM1_Init();
 	/* USER CODE BEGIN 2 */
+	HAL_UART_Receive_IT(&huart1, &gGlobal_rxData, 1);
 
 	HAL_TIM_Base_Start_IT(&htim1);
 	g_systemState.triggers.trigger_in_Old1 = HAL_GPIO_ReadPin(Trigger_IN_1_GPIO_Port, Trigger_IN_1_Pin);
@@ -457,7 +458,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 	if (huart->Instance == USART1)
 	{
 		RX_DATA();
-		HAL_UART_Receive_IT(&huart1, (uint8_t *)gGlobal_rxData, 1);
+		HAL_UART_Receive_IT(&huart1, &gGlobal_rxData, 1);
 	}
 }
 

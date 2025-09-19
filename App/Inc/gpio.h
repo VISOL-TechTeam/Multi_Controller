@@ -47,14 +47,14 @@ typedef struct
 // 트리거 상태 구조체
 typedef struct
 {
-    uint8_t trigger_in1;
-    uint8_t trigger_in2;
-    uint8_t trigger_in_Old1;
-    uint8_t trigger_in_Old2;
-    uint8_t trigger_in_setup_1;
-    uint8_t trigger_in_setup_2;
-    uint8_t trigger_out1;
-    uint8_t trigger_out2;
+    volatile uint8_t trigger_in1;
+    volatile uint8_t trigger_in2;
+    volatile uint8_t trigger_in_Old1;
+    volatile uint8_t trigger_in_Old2;
+    volatile uint8_t trigger_in_setup_1;
+    volatile uint8_t trigger_in_setup_2;
+    volatile uint8_t trigger_out1;
+    volatile uint8_t trigger_out2;
 } TriggerStates_t;
 
 enum
@@ -87,7 +87,7 @@ typedef struct
 {
     ButtonInputs_t buttons;
     TimerCounters_t timers;
-    TriggerStates_t triggers;
+    volatile TriggerStates_t triggers;
     EncoderStates_t encoder;
     CommData_t comm;
     uint8_t state;
