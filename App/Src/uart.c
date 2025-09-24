@@ -64,58 +64,58 @@ int USB_minipc(void)
                 chk += collectBuffer[4];
                 chk += collectBuffer[5];
                 chk += collectBuffer[6];
-                if (chk == collectBuffer[7])
+                chk += collectBuffer[7];
+                if (hextoascii(chk>>4 & 0x0F) == collectBuffer[8] && hextoascii(chk & 0x0F) == collectBuffer[9])
                 {
                     // 트리거 설정 명령 수신
-                    if (collectBuffer[3] == 0x31)
+                    if (collectBuffer[4] == 0x31)
                     {
                         g_systemState.triggers.trigger_in_setup_1 = 1; // 하강엣지 트리거
                     }
-                    else if (collectBuffer[3] == 0x32)
+                    else if (collectBuffer[4] == 0x32)
                     {
                         g_systemState.triggers.trigger_in_setup_1 = 2; // 상승엣지 트리거
                     }
-                    else if (collectBuffer[3] == 0x30)
+                    else if (collectBuffer[4] == 0x30)
                     {
                         g_systemState.triggers.trigger_in_setup_1 = 0; // 모든 엣지 감지지
                     }
 
-                    if (collectBuffer[4] == 0x31)
+                    if (collectBuffer[5] == 0x31)
                     {
                         g_systemState.triggers.trigger_in_setup_2 = 1; // 하강엣지 트리거
                     }
-                    else if (collectBuffer[4] == 0x32)
+                    else if (collectBuffer[5] == 0x32)
                     {
                         g_systemState.triggers.trigger_in_setup_2 = 2; // 상승엣지 트리거
                     }
-                    else if (collectBuffer[4] == 0x30)
+                    else if (collectBuffer[5] == 0x30)
                     {
                         g_systemState.triggers.trigger_in_setup_2 = 0; // 모든 엣지 감지지
                     }
 
-                    if (collectBuffer[5] == 0x31)
+                    if (collectBuffer[6] == 0x31)
                     {
                         HAL_GPIO_WritePin(Trigger_OUT_1_GPIO_Port, Trigger_OUT_1_Pin, GPIO_PIN_SET);
                         g_systemState.triggoutState1 = 1; // HIGH 출력
                     }
-                    else if (collectBuffer[5] == 0x32)
+                    else if (collectBuffer[6] == 0x32)
                     {
                         HAL_GPIO_WritePin(Trigger_OUT_1_GPIO_Port, Trigger_OUT_1_Pin, GPIO_PIN_RESET);
                         g_systemState.triggoutState1 = 2; // LOW 출력
                     }
 
-                    if (collectBuffer[6] == 0x31)
+                    if (collectBuffer[7] == 0x31)
                     {
                         HAL_GPIO_WritePin(Trigger_OUT_2_GPIO_Port, Trigger_OUT_2_Pin, GPIO_PIN_SET);
                         g_systemState.triggoutState2 = 1; // HIGH 출력
                     }
-                    else if (collectBuffer[6] == 0x32)
+                    else if (collectBuffer[7] == 0x32)
                     {
                         HAL_GPIO_WritePin(Trigger_OUT_2_GPIO_Port, Trigger_OUT_2_Pin, GPIO_PIN_RESET);
                         g_systemState.triggoutState2 = 2; // LOW 출력
                     }
                     // TriggerPin_1();
-                    CDC_Transmit_FS(collectBuffer, collectIndex);
                     collectIndex = 0;
                     isCollecting = 0;
                 }

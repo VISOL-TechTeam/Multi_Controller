@@ -2,13 +2,26 @@
 #include "main.h"
 #include "gpio.h"
 
-char hextoascii(char local_toconv) // toconv
+char hextoascii(uint8_t local_toconv) // hex value to ascii character
 {
-	if (local_toconv < 0x0A)
-		local_toconv += 0x30;
+	if (local_toconv <= 9)
+		return local_toconv + '0';
+	else if (local_toconv >= 10 && local_toconv <= 15)
+		return local_toconv - 10 + 'A';
 	else
-		local_toconv += 0x37;
-	return (local_toconv);
+		return '?'; // 잘못된 값
+}
+
+uint8_t asciitohex(char local_toconv) // ascii character to hex value
+{
+	if (local_toconv >= '0' && local_toconv <= '9')
+		return local_toconv - '0';
+	else if (local_toconv >= 'A' && local_toconv <= 'F')
+		return local_toconv - 'A' + 10;
+	else if (local_toconv >= 'a' && local_toconv <= 'f')
+		return local_toconv - 'a' + 10;
+	else
+		return 0xFF; // 잘못된 문자
 }
 
 void hex2ascii(void)

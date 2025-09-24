@@ -14,7 +14,8 @@ extern uint8_t gGlobal_crc1;
 extern uint8_t gGlobal_crc2;
 
 // 유틸리티 함수 프로토타입
-char hextoascii(char local_toconv);
+char hextoascii(uint8_t local_toconv);
+uint8_t asciitohex(char local_toconv);
 void hex2ascii(void);
 uint8_t calculate_crc8(void);
 uint8_t Pad_calculate_crc8(void);
