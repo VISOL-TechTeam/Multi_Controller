@@ -300,26 +300,30 @@ __attribute__((optimize("O0"))) void ProcessTriggers(void)
     // 1 = LOW , 0 = HIGH | 0->1 하강엣지 트리거 | 1->0 상승엣지 트리거
     switch (g_systemState.triggers.trigger_in1)
     {
-    case 1: // 라이징 엣지 트리거(엣지)
+    case 1:
         if ((g_systemState.triggers.trigger_in1 != g_systemState.triggers.trigger_in_Old1) &&
-            (g_systemState.triggers.trigger_in_setup_1 == ALL_EDGE || g_systemState.triggers.trigger_in_setup_1 == LOW_EDGE))
+            (g_systemState.triggers.trigger_in_setup_1 == ALL_EDGE || g_systemState.triggers.trigger_in_setup_1 == HIGH_EDGE))
         {
             g_systemState.comm.sendData[7] = 0x32; // TR1 폴링
             send_packet = true;
             active_trigger_num = 1;
-        }else if (g_systemState.triggers.trigger_in1 != g_systemState.triggers.trigger_in_Old1){
+        }
+        else if (g_systemState.triggers.trigger_in1 != g_systemState.triggers.trigger_in_Old1)
+        {
             g_systemState.triggers.trigger_in_Old1 = g_systemState.triggers.trigger_in1;
         }
         break;
 
-    case 0: // 라이징 엣지 트리거(상승엣지)
+    case 0:
         if ((g_systemState.triggers.trigger_in1 != g_systemState.triggers.trigger_in_Old1) &&
-            (g_systemState.triggers.trigger_in_setup_1 == ALL_EDGE || g_systemState.triggers.trigger_in_setup_1 == HIGH_EDGE))
+            (g_systemState.triggers.trigger_in_setup_1 == ALL_EDGE || g_systemState.triggers.trigger_in_setup_1 == LOW_EDGE))
         {
             g_systemState.comm.sendData[7] = 0x31; // TR1 라이징
             send_packet = true;
             active_trigger_num = 1;
-        }else if(g_systemState.triggers.trigger_in1 != g_systemState.triggers.trigger_in_Old1){
+        }
+        else if (g_systemState.triggers.trigger_in1 != g_systemState.triggers.trigger_in_Old1)
+        {
             g_systemState.triggers.trigger_in_Old1 = g_systemState.triggers.trigger_in1;
         }
         break;
@@ -332,24 +336,28 @@ __attribute__((optimize("O0"))) void ProcessTriggers(void)
         {
         case 1: // 하강엣지 트리거
             if (g_systemState.triggers.trigger_in2 != g_systemState.triggers.trigger_in_Old2 &&
-                (g_systemState.triggers.trigger_in_setup_2 == ALL_EDGE || g_systemState.triggers.trigger_in_setup_2 == LOW_EDGE))
+                (g_systemState.triggers.trigger_in_setup_2 == ALL_EDGE || g_systemState.triggers.trigger_in_setup_2 == HIGH_EDGE))
             {
                 g_systemState.comm.sendData[7] = 0x34;
                 send_packet = true;
                 active_trigger_num = 2;
-            }else if(g_systemState.triggers.trigger_in2 != g_systemState.triggers.trigger_in_Old2){
+            }
+            else if (g_systemState.triggers.trigger_in2 != g_systemState.triggers.trigger_in_Old2)
+            {
                 g_systemState.triggers.trigger_in_Old2 = g_systemState.triggers.trigger_in2;
             }
             break;
 
         case 0: // 상승엣지 트리거
             if (g_systemState.triggers.trigger_in2 != g_systemState.triggers.trigger_in_Old2 &&
-                (g_systemState.triggers.trigger_in_setup_2 == ALL_EDGE || g_systemState.triggers.trigger_in_setup_2 == HIGH_EDGE))
+                (g_systemState.triggers.trigger_in_setup_2 == ALL_EDGE || g_systemState.triggers.trigger_in_setup_2 == LOW_EDGE))
             {
                 g_systemState.comm.sendData[7] = 0x33;
                 send_packet = true;
                 active_trigger_num = 2;
-            }else if(g_systemState.triggers.trigger_in2 != g_systemState.triggers.trigger_in_Old2){
+            }
+            else if (g_systemState.triggers.trigger_in2 != g_systemState.triggers.trigger_in_Old2)
+            {
                 g_systemState.triggers.trigger_in_Old2 = g_systemState.triggers.trigger_in2;
             }
             break;
