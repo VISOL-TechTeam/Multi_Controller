@@ -202,6 +202,7 @@ void ProcessAllButtons(void)
         g_systemState.timers.longKey = 0;
         g_systemState.timers.longKeycount = 0;
         g_systemState.is_complete_memory = false;
+        g_systemState.is_complete_up_long = false;
         return;
     }
 }
