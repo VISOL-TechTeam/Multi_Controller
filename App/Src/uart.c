@@ -7,9 +7,9 @@
 extern UART_HandleTypeDef huart1; // UART1 핸들
 
 // 데이터 수집 관련 변수들
-static uint8_t collectBuffer[2048]; // 데이터 수집 버퍼
-static uint16_t collectIndex = 0;   // 데이터 수집 인덱스
-static uint8_t isCollecting = 0;    // 데이터 수집 상태 플래그
+uint8_t collectBuffer[2048]; // 데이터 수집 버퍼
+uint16_t collectIndex = 0;   // 데이터 수집 인덱스
+uint8_t isCollecting = 0;    // 데이터 수집 상태 플래그
 
 int USB_minipc(void)
 {

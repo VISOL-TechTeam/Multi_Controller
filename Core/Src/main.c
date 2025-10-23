@@ -74,6 +74,8 @@ uint8_t gGlobal_triggerState = 0;	// 트리거 1 처리 상태 (0: 대기, 1: �
 uint8_t gGlobal_triggerState2 = 0;	// 트리거 2 처리 상태 (10: 대기, 1: 활성, 15: 상승엣지 대기)
 uint8_t gGlobal_ledState = 0;		// LED 상태 (0: 미설정, 1: 활성)
 uint8_t dtState = 0;
+uint32_t get_usb_data_time = 0;
+uint8_t stx_flag = 0;
 
 // 통신 및 버퍼 관련 변수들
 int gGlobal_Rxindx;				 // 수신 데이터 인덱스
@@ -214,8 +216,8 @@ int main(void)
 		}
 		USB_minipc();
 
-		// 로터리 인코더 처리
-		ProcessEncoder();
+		// 로터리 인코더 처리 (고정밀 버전)
+		ProcessEncoderAdvanced();
 
 		// LED 상태 처리
 		ProcessLEDState();
@@ -239,7 +241,7 @@ int main(void)
 		ProcessAllButtons();
 
 		// 부저 처리
-		if (g_systemState.timers.keyCount == 50)
+		if ((g_systemState.state != BUTTON_STATE_IDLE && (g_systemState.timers.keyCount > 50 && g_systemState.timers.keyCount < 100)))
 		{
 			Buzzer_timer = 0;
 			HAL_GPIO_WritePin(BUZZER_GPIO_Port, BUZZER_Pin, GPIO_PIN_SET);
@@ -485,7 +487,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		g_systemState.timers.keyTimer = 0;
 		g_systemState.timers.keyCount++;
 	}
-	if (g_systemState.timers.longKey >= 3000)
+	if (g_systemState.timers.longKey >= 3000 && g_systemState.timers.longKeycount == 0)
 	{
 		g_systemState.timers.longKey = 0;
 		g_systemState.timers.longKeycount++;
