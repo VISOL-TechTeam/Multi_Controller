@@ -4,6 +4,8 @@
 
 // 전역 시스템 상태 변수 정의
 SystemState_t g_systemState = {0};
+extern uint8_t Long_Buzzer;
+extern uint32_t Buzzer_timer;
 
 // 외부 함수 프로토타입
 extern uint8_t Pad_calculate_crc8(void);
@@ -132,7 +134,7 @@ void ProcessAllButtons(void)
     case BUTTON_STATE_IDLE:
         // 버튼 누름 감지 및 상태 설정
         SetButtonState(g_systemState.buttons.upButton, BUTTON_STATE_UP);
-        SetButtonState(g_systemState.buttons.downButton, BUTTON_STATE_DOWN);
+         SetButtonState(g_systemState.buttons.downButton, BUTTON_STATE_DOWN);
         SetButtonState(g_systemState.buttons.powerButton, BUTTON_STATE_POWER);
         SetButtonState(g_systemState.buttons.boostButton, BUTTON_STATE_BOOST);
         SetButtonState(g_systemState.buttons.pcmodeButton, BUTTON_STATE_PCMODE);
@@ -770,11 +772,7 @@ uint8_t _get_trigger_out_state(bool trigger_out1, bool trigger_out2)
 
 static void _long_buttom_buzzer(void)
 {
+    Long_Buzzer = 1;
+    Buzzer_timer = 0;
     HAL_GPIO_WritePin(BUZZER_GPIO_Port, BUZZER_Pin, GPIO_PIN_SET);
-    HAL_Delay(50);
-    HAL_GPIO_WritePin(BUZZER_GPIO_Port, BUZZER_Pin, GPIO_PIN_RESET);
-    HAL_Delay(20);
-    HAL_GPIO_WritePin(BUZZER_GPIO_Port, BUZZER_Pin, GPIO_PIN_SET);
-    HAL_Delay(150);
-    HAL_GPIO_WritePin(BUZZER_GPIO_Port, BUZZER_Pin, GPIO_PIN_RESET);
 }

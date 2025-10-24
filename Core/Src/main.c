@@ -103,8 +103,9 @@ static unsigned short gGlobal_jog = 0;			// 조그 타이머
 static unsigned short gGlobal_jogTimer = 0;		// 조그 동작 타이머
 static unsigned short gGlobal_encoderTimer = 0; // LED 제어 타이머
 static unsigned short gGlobal_encoderCount = 0; // LED 깜빡임 카운터
-static unsigned short Buzzer_timer = 0;			// 부저 타이머
 static unsigned short Buzzer_count = 0;			// 부저 동작 카운터
+uint32_t Buzzer_timer = 0;			// 부저 타이머
+uint8_t Long_Buzzer = 0;			// 긴 버튼 누름 부저 타이머
 
 // 테스트 및 디버깅용 버퍼
 uint8_t gGlobal_resetBuf[100]; // 리셋 버퍼
@@ -507,10 +508,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		gGlobal_encoderTimer = 0;
 		gGlobal_encoderCount++;
 	}
-	if (Buzzer_timer >= 20)
+	if ((Buzzer_timer >= 20 && Long_Buzzer != 1) || (Buzzer_timer >= 300 && Long_Buzzer == 1))
 	{
 		HAL_GPIO_WritePin(BUZZER_GPIO_Port, BUZZER_Pin, GPIO_PIN_RESET);
 		Buzzer_timer = 0;
+		Long_Buzzer = 0;
 		Buzzer_count++;
 	}
 }
