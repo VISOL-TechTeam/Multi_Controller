@@ -255,6 +255,9 @@ void InitEncoderAdvanced(void)
     g_systemState.encoder.ccw_confidence = 0;
     g_systemState.encoder.dominant_direction = 0;
     
+    // 방향 오동작 보정 메커니즘 초기화
+    g_systemState.encoder.correction_count = 0;
+    
     // 기존 호환성을 위한 초기화
     g_systemState.encoder.lastStateCLK = HAL_GPIO_ReadPin(Dial_B_GPIO_Port, Dial_B_Pin);
     g_systemState.encoder.dtState = 0;
@@ -283,6 +286,7 @@ void ProcessEncoderAdvanced(void)
         g_systemState.encoder.cw_confidence = 0;
         g_systemState.encoder.ccw_confidence = 0;
         g_systemState.encoder.dominant_direction = 0;
+        g_systemState.encoder.correction_count = 0; // 방향 잠금 해제 시 치환 카운터 리셋
     }
     
     // 현재 CLK(B) 핀 상태 읽기 (기존 로직과 동일)
@@ -322,6 +326,17 @@ void ProcessEncoderAdvanced(void)
                 if (g_systemState.encoder.last_valid_direction != 2 || 
                     (current_time - g_systemState.encoder.last_action_time) > 250)
                 {
+                    // 31방향(반시계) 락이 걸려있는지 확인
+                    bool is_ccw_locked = (g_systemState.encoder.direction_lock == 2);
+                    bool should_correct = false;
+                    
+                    // 31방향으로 락이 걸려있고 치환 횟수가 3회 미만인 경우
+                    if (is_ccw_locked && g_systemState.encoder.correction_count < 3)
+                    {
+                        should_correct = true;
+                        g_systemState.encoder.correction_count++;
+                    }
+                    
                     // 시계방향 회전 처리
                     g_systemState.encoder.count++;
                     g_systemState.encoder.direction = 0;
@@ -330,11 +345,21 @@ void ProcessEncoderAdvanced(void)
                     if (g_systemState.encoder.count > ENCODER_COUNT_MAX)
                         g_systemState.encoder.count = 0;
                     
-                    // LED 상태 업데이트
-                    HAL_GPIO_WritePin(Dial_LED_2_GPIO_Port, Dial_LED_2_Pin, GPIO_PIN_SET);
-                    HAL_GPIO_WritePin(Dial_LED_3_GPIO_Port, Dial_LED_3_Pin, GPIO_PIN_SET);
-                    HAL_GPIO_WritePin(Dial_LED_1_GPIO_Port, Dial_LED_1_Pin, GPIO_PIN_RESET);
-                    g_systemState.comm.sendData[6] = 0x32;
+                    // LED 상태 업데이트 (치환 시에는 31방향 LED로 표시)
+                    if (should_correct)
+                    {
+                        HAL_GPIO_WritePin(Dial_LED_1_GPIO_Port, Dial_LED_1_Pin, GPIO_PIN_SET);
+                        HAL_GPIO_WritePin(Dial_LED_2_GPIO_Port, Dial_LED_2_Pin, GPIO_PIN_SET);
+                        HAL_GPIO_WritePin(Dial_LED_3_GPIO_Port, Dial_LED_3_Pin, GPIO_PIN_RESET);
+                        g_systemState.comm.sendData[6] = 0x31; // 32를 31로 치환
+                    }
+                    else
+                    {
+                        HAL_GPIO_WritePin(Dial_LED_2_GPIO_Port, Dial_LED_2_Pin, GPIO_PIN_SET);
+                        HAL_GPIO_WritePin(Dial_LED_3_GPIO_Port, Dial_LED_3_Pin, GPIO_PIN_SET);
+                        HAL_GPIO_WritePin(Dial_LED_1_GPIO_Port, Dial_LED_1_Pin, GPIO_PIN_RESET);
+                        g_systemState.comm.sendData[6] = 0x32;
+                    }
                     
                     // 통신 패킷 전송
                     g_systemState.comm.sendData[8] = _get_trigger_out_state(g_systemState.triggers.trigger_out1, g_systemState.triggers.trigger_out2);
@@ -347,23 +372,27 @@ void ProcessEncoderAdvanced(void)
                     // 상태 업데이트
                     g_systemState.timers.ledTimer = 0;
                     g_systemState.timers.ledCount = 0;
-                    g_systemState.encoder.last_valid_direction = 1;
+                    g_systemState.encoder.last_valid_direction = should_correct ? 2 : 1; // 치환 시에는 31방향으로 기록
                     g_systemState.encoder.last_action_time = current_time;
                     g_systemState.encoder.last_pulse_time = current_time;
                     g_systemState.encoder.last_change_time = current_time;
                     g_systemState.encoder.pulse_count++;
                     g_systemState.encoder.speed_pulse_count++;
                     
-                    // 방향 잠금 메커니즘 (시계방향)
-                    if (g_systemState.encoder.direction_lock == 1)
+                    // 방향 잠금 메커니즘 (시계방향) - 치환된 경우는 잠금 변경하지 않음
+                    if (!should_correct)
                     {
-                        g_systemState.encoder.same_direction_count++;
-                    }
-                    else
-                    {
-                        g_systemState.encoder.direction_lock = 1;
-                        g_systemState.encoder.direction_lock_time = current_time;
-                        g_systemState.encoder.same_direction_count = 1;
+                        if (g_systemState.encoder.direction_lock == 1)
+                        {
+                            g_systemState.encoder.same_direction_count++;
+                        }
+                        else
+                        {
+                            g_systemState.encoder.direction_lock = 1;
+                            g_systemState.encoder.direction_lock_time = current_time;
+                            g_systemState.encoder.same_direction_count = 1;
+                            g_systemState.encoder.correction_count = 0; // 방향 전환 시 치환 카운터 리셋
+                        }
                     }
                 }
             }
@@ -438,6 +467,11 @@ void ProcessEncoderAdvanced(void)
                     if (g_systemState.encoder.direction_lock == 2)
                     {
                         g_systemState.encoder.same_direction_count++;
+                        // 31방향이 계속되면 치환 카운터 리셋 (정상 동작으로 판단)
+                        if (g_systemState.encoder.same_direction_count >= 2)
+                        {
+                            g_systemState.encoder.correction_count = 0;
+                        }
                     }
                     else if (g_systemState.encoder.last_valid_direction != 1)
                     {
@@ -445,6 +479,7 @@ void ProcessEncoderAdvanced(void)
                         g_systemState.encoder.direction_lock = 2;
                         g_systemState.encoder.direction_lock_time = current_time;
                         g_systemState.encoder.same_direction_count = 1;
+                        g_systemState.encoder.correction_count = 0; // 새로운 31방향 잠금 시작 시 치환 카운터 리셋
                     }
                     // 시계방향에서 반시계방향으로 전환 시에는 잠금 설정하지 않음
                 }
@@ -527,6 +562,7 @@ void ResetEncoderCount(void)
     g_systemState.encoder.cw_confidence = 0;
     g_systemState.encoder.ccw_confidence = 0;
     g_systemState.encoder.dominant_direction = 0;
+    g_systemState.encoder.correction_count = 0;
 }
 
 /**

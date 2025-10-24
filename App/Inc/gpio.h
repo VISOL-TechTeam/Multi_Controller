@@ -116,6 +116,9 @@ typedef struct
     volatile uint8_t cw_confidence;      // 시계방향 신뢰도 카운터
     volatile uint8_t ccw_confidence;     // 반시계방향 신뢰도 카운터
     volatile uint8_t dominant_direction; // 우세한 방향 (1: 시계, 2: 반시계, 0: 없음)
+    
+    // 방향 오동작 보정 메커니즘
+    volatile uint8_t correction_count;   // 방향 치환 카운터 (최대 3회)
 } EncoderStates_t;
 
 // 통신 데이터 구조체
