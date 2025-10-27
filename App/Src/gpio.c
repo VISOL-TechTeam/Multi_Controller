@@ -772,7 +772,10 @@ uint8_t _get_trigger_out_state(bool trigger_out1, bool trigger_out2)
 
 static void _long_buttom_buzzer(void)
 {
-    Long_Buzzer = 1;
-    Buzzer_timer = 0;
-    HAL_GPIO_WritePin(BUZZER_GPIO_Port, BUZZER_Pin, GPIO_PIN_SET);
+    if(g_systemState.enable_buzzer == 1)
+    {
+        Long_Buzzer = 1;
+        Buzzer_timer = 0;
+        HAL_GPIO_WritePin(BUZZER_GPIO_Port, BUZZER_Pin, GPIO_PIN_SET);
+    }
 }

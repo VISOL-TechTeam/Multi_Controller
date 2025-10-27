@@ -65,7 +65,7 @@ int USB_minipc(void)
                 chk += collectBuffer[5];
                 chk += collectBuffer[6];
                 chk += collectBuffer[7];
-                if (hextoascii(chk>>4 & 0x0F) == collectBuffer[8] && hextoascii(chk & 0x0F) == collectBuffer[9])
+                if (hextoascii(chk >> 4 & 0x0F) == collectBuffer[8] && hextoascii(chk & 0x0F) == collectBuffer[9])
                 {
                     // 트리거 설정 명령 수신
                     if (collectBuffer[4] == 0x31)
@@ -114,6 +114,15 @@ int USB_minipc(void)
                     {
                         HAL_GPIO_WritePin(Trigger_OUT_2_GPIO_Port, Trigger_OUT_2_Pin, GPIO_PIN_RESET);
                         g_systemState.triggoutState2 = 2; // LOW 출력
+                    }
+
+                    if (collectBuffer[4] == 0xFF && collectBuffer[5] == 0xFF && collectBuffer[6] == 0xFF && collectBuffer[7] == 0xFF)
+                    {
+                        g_systemState.enable_buzzer = 0;
+                    }
+                    else if (collectBuffer[4] == 0xFE && collectBuffer[5] == 0xFE && collectBuffer[6] == 0xFE && collectBuffer[7] == 0xFE)
+                    {
+                        g_systemState.enable_buzzer = 1;
                     }
                     // TriggerPin_1();
                     collectIndex = 0;

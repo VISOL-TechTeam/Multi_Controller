@@ -104,8 +104,8 @@ static unsigned short gGlobal_jogTimer = 0;		// 조그 동작 타이머
 static unsigned short gGlobal_encoderTimer = 0; // LED 제어 타이머
 static unsigned short gGlobal_encoderCount = 0; // LED 깜빡임 카운터
 static unsigned short Buzzer_count = 0;			// 부저 동작 카운터
-uint32_t Buzzer_timer = 0;			// 부저 타이머
-uint8_t Long_Buzzer = 0;			// 긴 버튼 누름 부저 타이머
+uint32_t Buzzer_timer = 0;						// 부저 타이머
+uint8_t Long_Buzzer = 0;						// 긴 버튼 누름 부저 타이머
 
 // 테스트 및 디버깅용 버퍼
 uint8_t gGlobal_resetBuf[100]; // 리셋 버퍼
@@ -190,6 +190,7 @@ int main(void)
 	HAL_GPIO_WritePin(Trigger_OUT_1_GPIO_Port, Trigger_OUT_1_Pin, GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(Trigger_OUT_2_GPIO_Port, Trigger_OUT_2_Pin, GPIO_PIN_RESET);
 
+	g_systemState.enable_buzzer = 1;
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
@@ -242,7 +243,7 @@ int main(void)
 		ProcessAllButtons();
 
 		// 부저 처리
-		if ((g_systemState.state != BUTTON_STATE_IDLE && (g_systemState.timers.keyCount > 50 && g_systemState.timers.keyCount < 100)))
+		if ((g_systemState.state != BUTTON_STATE_IDLE && (g_systemState.timers.keyCount > 50 && g_systemState.timers.keyCount < 100)) && g_systemState.enable_buzzer == 1)
 		{
 			Buzzer_timer = 0;
 			HAL_GPIO_WritePin(BUZZER_GPIO_Port, BUZZER_Pin, GPIO_PIN_SET);
@@ -508,7 +509,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		gGlobal_encoderTimer = 0;
 		gGlobal_encoderCount++;
 	}
-	if ((Buzzer_timer >= 20 && Long_Buzzer != 1) || (Buzzer_timer >= 300 && Long_Buzzer == 1))
+	if ((Buzzer_timer >= 20 && Long_Buzzer != 1) || (Buzzer_timer >= 300 && Long_Buzzer == 1) || g_systemState.enable_buzzer == 0)
 	{
 		HAL_GPIO_WritePin(BUZZER_GPIO_Port, BUZZER_Pin, GPIO_PIN_RESET);
 		Buzzer_timer = 0;

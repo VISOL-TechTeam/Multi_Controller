@@ -67,8 +67,8 @@ enum
 // 엔코더 상수 정의
 #define ENCODER_COUNT_MAX 999
 #define ENCODER_COUNT_MIN -999
-#define ENCODER_DEBOUNCE_TIME_MS 5      // 디바운스 시간 증가 (5ms -> 15ms)
-#define ENCODER_MIN_PULSE_INTERVAL_MS 5 // 최소 펄스 간격 증가 (20ms -> 50ms)
+#define ENCODER_DEBOUNCE_TIME_MS 20      // 디바운스 시간 증가 (5ms -> 15ms)
+#define ENCODER_MIN_PULSE_INTERVAL_MS 10 // 최소 펄스 간격 증가 (20ms -> 50ms)
 #define ENCODER_SPEED_TIMEOUT_MS 100
 #define ENCODER_SPEED_SAMPLE_PERIOD_MS 50
 #define ENCODER_DIRECTION_LOCK_TIME_MS 500       // 방향 잠금 시간 증가 (200ms -> 500ms)
@@ -142,6 +142,8 @@ typedef struct
     bool is_complete_up_long;
     uint8_t triggoutState1;
     uint8_t triggoutState2;
+    
+    uint8_t enable_buzzer;
 } SystemState_t;
 
 // 전역 시스템 상태 변수
