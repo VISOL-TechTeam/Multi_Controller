@@ -527,9 +527,9 @@ void Error_Handler(void)
 {
 	/* USER CODE BEGIN Error_Handler_Debug */
 	/* 사용자 코드 시작 - 디버그 모드에서만 실행 */
-	__disable_irq();
 	while (1)
 	{
+		NVIC_SystemReset();
 	}
 	/* USER CODE END Error_Handler_Debug */
 }
