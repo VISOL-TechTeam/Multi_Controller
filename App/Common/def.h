@@ -11,7 +11,6 @@
 #include <string.h>
 #include <time.h>
 
-#include "encoder.h"
 #include "util.h"
 #include "gpio.h"
 

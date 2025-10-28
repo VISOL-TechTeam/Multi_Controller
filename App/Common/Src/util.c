@@ -7,7 +7,7 @@ uint8_t gGlobal_sum2 = 0;
 uint8_t gGlobal_crc1 = 0;
 uint8_t gGlobal_crc2 = 0;
 
-char hextoascii(char local_toconv) // toconv
+inline char hextoascii(char local_toconv) // toconv
 {
 	if (local_toconv < 0x0A)
 		local_toconv += 0x30;
@@ -16,7 +16,7 @@ char hextoascii(char local_toconv) // toconv
 	return (local_toconv);
 }
 
-void hex2ascii(void)
+inline void hex2ascii(void)
 {
 	gGlobal_crc1 = hextoascii(gGlobal_sum1);
 	gGlobal_crc2 = hextoascii(gGlobal_sum2);
@@ -25,7 +25,7 @@ void hex2ascii(void)
 	gGlobal_sum = 0;
 }
 
-uint8_t calculate_crc8(void)
+inline uint8_t calculate_crc8(void)
 {
 	for (int i = 1; i < (int)(gGlobal_usbLen - 3); i++)
 	{
@@ -38,7 +38,7 @@ uint8_t calculate_crc8(void)
 	return gGlobal_sum;
 }
 
-uint8_t Pad_calculate_crc8(void)
+inline uint8_t Pad_calculate_crc8(void)
 {
 	gGlobal_sum = 0; // 초기화 추가
 	for (int i = 1; i < 9; i++)

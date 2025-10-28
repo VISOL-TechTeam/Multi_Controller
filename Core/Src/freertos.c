@@ -27,7 +27,6 @@
 
 #include "cmsis_os.h"
 #include "usb_device.h"
-#include "encoder.h"
 #include "def.h"
 /* USER CODE END Includes */
 
@@ -61,7 +60,7 @@ osThreadId_t encoderTaskHandle;
 const osThreadAttr_t encoderTask_attributes = {
     .name = "encoderTask",
     .stack_size = 128 * 4,
-    .priority = (osPriority_t)osPriorityNormal,
+    .priority = (osPriority_t)osPriorityAboveNormal, // 우선순위 상향 조정
 };
 /* Definitions for uartTask */
 osThreadId_t uartTaskHandle;
@@ -89,6 +88,12 @@ extern uint32_t gGlobal_usbLen;
 
 extern uint32_t Buzzer_timer;
 extern uint32_t Buzzer_count;
+
+// 엔코더 상태 변수들
+volatile int32_t g_encoder_count = 0;
+volatile uint8_t g_encoder_direction = 0;
+volatile uint32_t g_encoder_last_change_time = 0;
+
 /* USER CODE END Variables */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -193,8 +198,8 @@ void StartDefaultTask(void *argument)
 
     current_time = HAL_GetTick();
 
-    // 엔코더 값 가져오기
-    current_encoder_count = Encoder_GetCount();
+    // 엔코더 값 가져오기 (인라인 함수로 최적화됨)
+    current_encoder_count = g_encoder_count;
 
     // 엔코더 카운트 변화 감지 및 누적
     if (current_encoder_count != old_encoder_count)
@@ -205,73 +210,66 @@ void StartDefaultTask(void *argument)
       old_encoder_count = current_encoder_count;
     }
 
-    // 누적된 변화 처리 (디밍 잠금 상태가 아닐 때만)
+    // 누적된 변화 처리 - 임계값 3으로 낮춰서 더 빠른 응답성 확보
     if (pending_count_change != 0)
     {
-      // 누적된 변화가 4 이상일 때만 처리
-      if (abs(pending_count_change) > 3)
+      uint8_t dial_code = 0;
+      uint8_t direction = 0;
+
+      // 임계값 체크 (3 이상이거나 타임아웃)
+      if (abs(pending_count_change) > 3 || ((abs(pending_count_change) == 3 || abs(pending_count_change) == 2) && (current_time - stable_timer_start) > 15))
       {
-        // 디밍 값 조정
+        // 방향 결정
         if (pending_count_change > 0)
         {
-          // uint8_t dimming_temp = (Dimming + step > 100) ? 100 : Dimming + step;
-          // Dimming = dimming_temp % 5 != 0 ? (dimming_temp / 5 * 5) : dimming_temp;
-
           // 반시계방향 회전
           HAL_GPIO_WritePin(Dial_LED_1_GPIO_Port, Dial_LED_1_Pin, GPIO_PIN_SET);
           HAL_GPIO_WritePin(Dial_LED_2_GPIO_Port, Dial_LED_2_Pin, GPIO_PIN_SET);
           HAL_GPIO_WritePin(Dial_LED_3_GPIO_Port, Dial_LED_3_Pin, GPIO_PIN_RESET);
-          g_systemState.comm.sendData[6] = 0x31;
-
-          g_systemState.comm.sendData[8] = GetTriggerOutState(g_systemState.triggers.trigger_out1, g_systemState.triggers.trigger_out2);
-          Pad_calculate_crc8();
-          g_systemState.comm.sendData[9] = g_systemState.comm.crc1;
-          g_systemState.comm.sendData[10] = g_systemState.comm.crc2;
-          CDC_Transmit_FS((uint8_t *)g_systemState.comm.sendData, sizeof(g_systemState.comm.sendData));
-          g_systemState.comm.sendData[6] = 0x30;
-          g_systemState.timers.ledTimer = 0;
-          g_systemState.timers.ledCount = 0;
-          g_systemState.encoder.dtState = 0;
-          g_systemState.encoder.last_valid_direction = 2;
-          g_systemState.encoder.last_action_time = HAL_GetTick();
-
-          pending_count_change -= 4;
+          dial_code = 0x31;
+          direction = 2;
+          pending_count_change -= (abs(pending_count_change) == 3 || abs(pending_count_change) == 2) ? abs(pending_count_change) : 4;
         }
         else
         {
-          // uint8_t dimming_temp = (Dimming < step) ? 0 : Dimming - step;
-          // Dimming = dimming_temp % 5 != 0 ? (dimming_temp / 5 * 5) : dimming_temp;
           // 시계방향 회전
-
           HAL_GPIO_WritePin(Dial_LED_2_GPIO_Port, Dial_LED_2_Pin, GPIO_PIN_SET);
           HAL_GPIO_WritePin(Dial_LED_3_GPIO_Port, Dial_LED_3_Pin, GPIO_PIN_SET);
           HAL_GPIO_WritePin(Dial_LED_1_GPIO_Port, Dial_LED_1_Pin, GPIO_PIN_RESET);
-          g_systemState.comm.sendData[6] = 0x32;
-
-          g_systemState.comm.sendData[8] = GetTriggerOutState(g_systemState.triggers.trigger_out1, g_systemState.triggers.trigger_out2);
-          Pad_calculate_crc8();
-          g_systemState.comm.sendData[9] = g_systemState.comm.crc1;
-          g_systemState.comm.sendData[10] = g_systemState.comm.crc2;
-          CDC_Transmit_FS((uint8_t *)g_systemState.comm.sendData, sizeof(g_systemState.comm.sendData));
-          g_systemState.comm.sendData[6] = 0x30;
-          g_systemState.timers.ledTimer = 0;
-          g_systemState.timers.ledCount = 0;
-          g_systemState.encoder.last_valid_direction = 1;
-          g_systemState.encoder.last_action_time = HAL_GetTick();
-
-          pending_count_change += 4;
+          dial_code = 0x32;
+          direction = 1;
+          pending_count_change += (abs(pending_count_change) == 3 || abs(pending_count_change) == 2) ? abs(pending_count_change) : 4;
         }
+
+        // 통신 데이터 전송 (공통 처리)
+        g_systemState.comm.sendData[6] = dial_code;
+        g_systemState.comm.sendData[8] = GetTriggerOutState(g_systemState.triggers.trigger_out1, g_systemState.triggers.trigger_out2);
+        Pad_calculate_crc8();
+        g_systemState.comm.sendData[9] = g_systemState.comm.crc1;
+        g_systemState.comm.sendData[10] = g_systemState.comm.crc2;
+        CDC_Transmit_FS((uint8_t *)g_systemState.comm.sendData, sizeof(g_systemState.comm.sendData));
+
+        // 상태 업데이트
+        g_systemState.comm.sendData[6] = 0x30;
+        g_systemState.timers.ledTimer = 0;
+        g_systemState.timers.ledCount = 0;
+        g_systemState.encoder.dtState = 0;
+        g_systemState.encoder.last_valid_direction = direction;
+        g_systemState.encoder.last_action_time = current_time;
       }
-      else if ((current_time - stable_timer_start) > 200)
+      else if ((current_time - stable_timer_start) > 150)
       {
-        pending_count_change = 0; // 타임아웃으로 리셋
-        Encoder_ResetCount();
+        // 타임아웃으로 리셋
+        pending_count_change = 0;
       }
     }
-    else
+    else if ((current_time - stable_timer_start) > 150 && old_encoder_count != 0)
     {
-      pending_count_change = 0; // 타임아웃으로 리셋
-      Encoder_ResetCount();
+      // 엔코더 카운트 리셋
+      g_encoder_count = 0;
+      old_encoder_count = 0;
+      pending_count_change = 0;
+      current_encoder_count = 0;
     }
 
     // LED 상태 변화
@@ -285,7 +283,7 @@ void StartDefaultTask(void *argument)
         g_systemState.timers.ledCount = 0;
       }
     }
-    osDelay(5);
+    osDelay(10); // 5ms -> 3ms로 단축하여 더 빠른 응답성 확보
   }
   /* USER CODE END 5 */
 }
@@ -303,19 +301,11 @@ void StartEncoderTask(void *argument)
   /* USER CODE BEGIN StartEncoderTask */
   /* Infinite loop */
 
-  // 외부 디밍 잠금 변수들 선언
-
   // 4x 디코딩을 위한 변수들
   uint8_t encoder_state = 0;
   uint8_t last_encoder_state = 0;
-  uint32_t current_time;
 
-  // 엔코더 상태 변수들
-  static volatile int32_t encoder_count = 0;
-  static volatile uint8_t encoder_direction = 0;
-  static volatile uint32_t encoder_last_change_time = 0;
-
-  // 4x 디코딩 테이블
+  // 4x 디코딩 테이블 - 최적화된 룩업 테이블
   static const int8_t encoder_table[16] = {
       0, -1, 1, 0, // 00의 이전 상태에서 올 때
       1, 0, 0, -1, // 01의 이전 상태에서 올 때
@@ -328,45 +318,38 @@ void StartEncoderTask(void *argument)
   encoder_state = (HAL_GPIO_ReadPin(Dial_A_GPIO_Port, Dial_A_Pin) << 1) |
                   HAL_GPIO_ReadPin(Dial_B_GPIO_Port, Dial_B_Pin);
   last_encoder_state = encoder_state;
+
   /* Infinite loop */
   for (;;)
   {
-
-    current_time = HAL_GetTick();
-
-    // GPIO 상태 읽기
+    // GPIO 상태 읽기 (한 번만 읽기)
     encoder_state = (HAL_GPIO_ReadPin(Dial_A_GPIO_Port, Dial_A_Pin) << 1) |
                     HAL_GPIO_ReadPin(Dial_B_GPIO_Port, Dial_B_Pin);
 
-    // 상태 변경 감지 및 처리
+    // 상태 변경 감지 및 처리 (변경이 있을 때만 처리)
     if (encoder_state != last_encoder_state)
     {
       int8_t direction_delta = encoder_table[(last_encoder_state << 2) | encoder_state];
 
       if (direction_delta != 0)
       {
-        // 엔코더 카운트 및 방향 업데이트
-        encoder_count += direction_delta;
-        encoder_direction = (direction_delta > 0) ? 0 : 1;
+        // 엔코더 카운트 직접 업데이트 (함수 호출 오버헤드 제거)
+        g_encoder_count += direction_delta;
+        g_encoder_direction = (direction_delta > 0) ? 0 : 1;
 
-        // 순환 범위 제한 (-999 ~ +999)
-        if (encoder_count > ENCODER_COUNT_MAX)
-          encoder_count = 0;
-        else if (encoder_count < ENCODER_COUNT_MIN)
-          encoder_count = 0;
+        // 순환 범위 제한 (빠른 비교)
+        if (g_encoder_count > ENCODER_COUNT_MAX)
+          g_encoder_count = 0;
+        else if (g_encoder_count < ENCODER_COUNT_MIN)
+          g_encoder_count = 0;
 
-        // 타임스탬프 업데이트 및 펄스 카운트 증가
-        encoder_last_change_time = current_time;
-        Encoder_AddPulseCount(1);
+        // 타임스탬프 업데이트
+        g_encoder_last_change_time = HAL_GetTick();
       }
 
       last_encoder_state = encoder_state;
     }
 
-    // 전역 엔코더 값 업데이트
-    Encoder_SetCount(encoder_count);
-    Encoder_SetDirection(encoder_direction);
-    Encoder_SetLastChangeTime(encoder_last_change_time);
     osDelay(1); // 1ms 주기로 실행
   }
   /* USER CODE END StartEncoderTask */
@@ -545,7 +528,7 @@ void StartUartTask(void *argument)
       }
       gGlobal_usbToggle = 0;
     }
-    osDelay(50);
+    osDelay(10); // 50ms -> 10ms로 단축하여 더 빠른 USB 통신 처리
   }
   /* USER CODE END StartUartTask */
 }
