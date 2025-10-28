@@ -1455,8 +1455,8 @@ void HAL_PCD_IRQHandler(PCD_HandleTypeDef *hpcd)
   */
 void HAL_PCD_WKUP_IRQHandler(PCD_HandleTypeDef *hpcd)
 {
-  /* Clear EXTI pending Bit */
   UNUSED(hpcd);
+  /* Clear EXTI pending Bit */
   __HAL_USB_WAKEUP_EXTI_CLEAR_FLAG();
 }
 #endif /* defined (USB) */

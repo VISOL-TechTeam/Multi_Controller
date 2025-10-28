@@ -77,7 +77,7 @@ void HAL_PCD_MspInit(PCD_HandleTypeDef* pcdHandle)
     __HAL_RCC_USB_CLK_ENABLE();
 
     /* Peripheral interrupt init */
-    HAL_NVIC_SetPriority(USB_LP_CAN1_RX0_IRQn, 0, 0);
+    HAL_NVIC_SetPriority(USB_LP_CAN1_RX0_IRQn, 5, 0);
     HAL_NVIC_EnableIRQ(USB_LP_CAN1_RX0_IRQn);
   /* USER CODE BEGIN USB_MspInit 1 */
 
@@ -615,8 +615,9 @@ static void PCDEx_SetConnectionState(PCD_HandleTypeDef *hpcd, uint8_t state)
 #else
 void HAL_PCDEx_SetConnectionState(PCD_HandleTypeDef *hpcd, uint8_t state)
 #endif /* USE_HAL_PCD_REGISTER_CALLBACKS */
-{ 
+{
   UNUSED(hpcd);
+  UNUSED(state);
   /* USER CODE BEGIN 6 */
   if (state == 1)
   {

@@ -45,10 +45,9 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined library search paths
 )
 
-
 file(GLOB SRC_FILES CONFIGURE_DEPENDS
-App/Src/*.c
-
+App/Common/Src/*.c
+App/Hw/Src/*.c
 )
 
 # Add sources to executable
@@ -60,24 +59,11 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
-    App/Src
-    App/Inc
-    App
+    App/Hw
+    App/Hw/Inc
+    App/Common
+    App/Common/Inc
 
-)
-
-# Add include paths
-target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
-    # Add user defined include paths
-    ${CMAKE_SOURCE_DIR}/Core/Inc
-    ${CMAKE_SOURCE_DIR}/USB_DEVICE/App
-    ${CMAKE_SOURCE_DIR}/USB_DEVICE/Target
-    ${CMAKE_SOURCE_DIR}/Drivers/STM32F1xx_HAL_Driver/Inc
-    ${CMAKE_SOURCE_DIR}/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy
-    ${CMAKE_SOURCE_DIR}/Middlewares/ST/STM32_USB_Device_Library/Core/Inc
-    ${CMAKE_SOURCE_DIR}/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc
-    ${CMAKE_SOURCE_DIR}/Drivers/CMSIS/Device/ST/STM32F1xx/Include
-    ${CMAKE_SOURCE_DIR}/Drivers/CMSIS/Include
 )
 
 # Add project symbols (macros)

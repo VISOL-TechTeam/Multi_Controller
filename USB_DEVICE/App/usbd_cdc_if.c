@@ -31,7 +31,9 @@
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-
+uint8_t gGlobal_Buffer[2048]={0};
+uint32_t gGlobal_usbLen=0;
+uint8_t gGlobal_usbToggle=0;
 /* USER CODE END PV */
 
 /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
@@ -49,11 +51,7 @@
  */
 
 /* USER CODE BEGIN PRIVATE_TYPES */
-extern uint8_t gGlobal_Buffer[2048]; // 64
-extern uint8_t gGlobal_usbToggle;
-extern uint32_t gGlobal_usbLen;
-extern uint8_t stx_flag;
-extern uint32_t get_usb_data_time;
+
 /* USER CODE END PRIVATE_TYPES */
 
 /**
@@ -180,9 +178,9 @@ static int8_t CDC_DeInit_FS(void)
  */
 static int8_t CDC_Control_FS(uint8_t cmd, uint8_t *pbuf, uint16_t length)
 {
+  /* USER CODE BEGIN 5 */
   UNUSED(pbuf);
   UNUSED(length);
-  /* USER CODE BEGIN 5 */
   switch (cmd)
   {
   case CDC_SEND_ENCAPSULATED_COMMAND:
@@ -264,9 +262,9 @@ static int8_t CDC_Control_FS(uint8_t cmd, uint8_t *pbuf, uint16_t length)
 static int8_t CDC_Receive_FS(uint8_t *Buf, uint32_t *Len)
 {
   /* USER CODE BEGIN 6 */
+  UNUSED(Len);
   USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
   USBD_CDC_ReceivePacket(&hUsbDeviceFS);
-  // CDC_Transmit_FS(Buf, Buf);
 
   uint32_t len = *Len;
   // 버퍼 오버플로우 방지
@@ -274,37 +272,12 @@ static int8_t CDC_Receive_FS(uint8_t *Buf, uint32_t *Len)
   {
     len = sizeof(gGlobal_Buffer);
   }
-  if (Buf[0] == 0x02 && stx_flag == 0)
-  {
-    stx_flag = 1;
-    gGlobal_usbLen = 0;
-    for (uint32_t i = 0; i < len; i++)
-    {
-      gGlobal_Buffer[gGlobal_usbLen++] = Buf[i];
-    }
-    get_usb_data_time = HAL_GetTick();
-  }
-  else if (stx_flag == 1)
-  {
-    for (uint32_t i = 0; i < len; i++)
-    {
-      gGlobal_Buffer[gGlobal_usbLen++] = Buf[i];
-    }
-    get_usb_data_time = HAL_GetTick();
-  }
 
-  if (gGlobal_Buffer[gGlobal_usbLen - 1] == 0x03)
-  {
-    stx_flag = 0;
-    gGlobal_usbToggle = 1;
-    get_usb_data_time = 0;
-  }
-  else if (gGlobal_usbLen > 0 && HAL_GetTick() - get_usb_data_time > 10)
-  {
-    stx_flag = 0;
-    get_usb_data_time = 0;
-  }
-
+  memset(gGlobal_Buffer, '\0', sizeof(gGlobal_Buffer)); // clear the buffer
+  memcpy(gGlobal_Buffer, Buf, len);                     // copy the data to the buffer
+  memset(Buf, '\0', *Len);                              // clear the Buf also
+  gGlobal_usbLen = len;
+  gGlobal_usbToggle = 1;
   return (USBD_OK);
   /* USER CODE END 6 */
 }
