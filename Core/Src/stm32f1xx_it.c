@@ -88,11 +88,48 @@ void NMI_Handler(void)
 void HardFault_Handler(void)
 {
   /* USER CODE BEGIN HardFault_IRQn 0 */
-
+  /* 하드폴트 발생 시 레지스터 정보 저장 */
+  volatile uint32_t *hardfault_args;
+  
+  __asm volatile
+  (
+    " tst lr, #4                                                \n"
+    " ite eq                                                    \n"
+    " mrseq r0, msp                                             \n"
+    " mrsne r0, psp                                             \n"
+    " ldr r1, [r0, #24]                                         \n"
+    " mov %0, r0                                                \n"
+    : "=r" (hardfault_args)
+    :
+    : "r0", "r1"
+  );
+  
+  /* 디버깅을 위한 변수들 (디버거에서 확인 가능) */
+  volatile uint32_t stacked_r0 = hardfault_args[0];
+  volatile uint32_t stacked_r1 = hardfault_args[1];
+  volatile uint32_t stacked_r2 = hardfault_args[2];
+  volatile uint32_t stacked_r3 = hardfault_args[3];
+  volatile uint32_t stacked_r12 = hardfault_args[4];
+  volatile uint32_t stacked_lr = hardfault_args[5];
+  volatile uint32_t stacked_pc = hardfault_args[6];
+  volatile uint32_t stacked_psr = hardfault_args[7];
+  
+  /* 변수 사용 경고 제거 */
+  (void)stacked_r0;
+  (void)stacked_r1;
+  (void)stacked_r2;
+  (void)stacked_r3;
+  (void)stacked_r12;
+  (void)stacked_lr;
+  (void)stacked_pc;
+  (void)stacked_psr;
+  
   /* USER CODE END HardFault_IRQn 0 */
   while (1)
   {
     /* USER CODE BEGIN W1_HardFault_IRQn 0 */
+    /* 하드폴트 발생 - 여기서 중단점을 설정하여 디버깅 */
+    /* stacked_pc 값을 확인하여 문제가 발생한 코드 위치 파악 가능 */
     /* USER CODE END W1_HardFault_IRQn 0 */
   }
 }

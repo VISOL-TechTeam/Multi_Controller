@@ -8,8 +8,8 @@ extern uint8_t gGlobal_sum;
 extern uint8_t gGlobal_sum1;
 extern uint8_t gGlobal_sum2;
 extern uint8_t gGlobal_sendData[12];
-extern uint8_t gGlobal_Buffer[2048];
-extern uint32_t gGlobal_usbLen;
+extern volatile uint8_t gGlobal_Buffer[1024];
+extern volatile uint32_t gGlobal_usbLen;
 extern uint8_t gGlobal_crc1;
 extern uint8_t gGlobal_crc2;
 

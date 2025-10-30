@@ -66,7 +66,7 @@ const osThreadAttr_t encoderTask_attributes = {
 osThreadId_t uartTaskHandle;
 const osThreadAttr_t uartTask_attributes = {
     .name = "uartTask",
-    .stack_size = 128 * 4,
+    .stack_size = 128 * 8, // static 버퍼 사용으로 스택 크기 감소 (768 바이트)
     .priority = (osPriority_t)osPriorityNormal,
 };
 /* Definitions for buttonTask */
@@ -82,9 +82,9 @@ SystemState_t g_systemState = {0};
 
 extern UART_HandleTypeDef huart1;
 
-extern uint8_t gGlobal_usbToggle;
-extern uint8_t gGlobal_Buffer[2048];
-extern uint32_t gGlobal_usbLen;
+extern volatile uint8_t gGlobal_usbToggle;
+extern volatile uint8_t gGlobal_Buffer[1024]; // 1024바이트 USB 수신 버퍼
+extern volatile uint32_t gGlobal_usbLen;
 
 extern uint32_t Buzzer_timer;
 extern uint32_t Buzzer_count;
@@ -105,6 +105,10 @@ void StartButtonTask(void *argument);
 
 static int TriggerPin_1(void);
 static int TriggerPin_2(void);
+
+/* FreeRTOS 콜백 함수 */
+void vApplicationStackOverflowHook(TaskHandle_t xTask, signed char *pcTaskName);
+void vApplicationMallocFailedHook(void);
 /* USER CODE END FunctionPrototypes */
 
 /* Private application code --------------------------------------------------*/
@@ -216,8 +220,9 @@ void StartDefaultTask(void *argument)
       uint8_t dial_code = 0;
       uint8_t direction = 0;
 
+      bool enable_calibration = true;
       // 임계값 체크 (3 이상이거나 타임아웃)
-      if (abs(pending_count_change) > 3 || ((abs(pending_count_change) == 3 || abs(pending_count_change) == 2) && (current_time - stable_timer_start) > 15))
+      if (abs(pending_count_change) > 3 || (enable_calibration && (abs(pending_count_change) == 3 ) && (current_time - stable_timer_start) > 15))
       {
         // 방향 결정
         if (pending_count_change > 0)
@@ -366,15 +371,25 @@ void StartUartTask(void *argument)
 {
   UNUSED(argument);
   /* USER CODE BEGIN StartUartTask */
-  // 데이터 수집 관련 변수들
-  uint8_t collectBuffer[2048]; // 데이터 수집 버퍼
-  uint16_t collectIndex = 0;   // 데이터 수집 인덱스
-  uint8_t isCollecting = 0;    // 데이터 수집 상태 플래그
+  // 데이터 수집 관련 변수들 - static으로 선언하여 스택 오버플로우 방지
+  static uint8_t collectBuffer[1024]; // 데이터 수집 버퍼 (1024바이트)
+  static uint16_t collectIndex = 0;   // 데이터 수집 인덱스 (static으로 상태 유지)
+  static uint8_t isCollecting = 0;    // 데이터 수집 상태 플래그 (static으로 상태 유지)
+
   /* Infinite loop */
   for (;;)
   {
     if (gGlobal_usbToggle == 1)
     {
+      // USB 데이터 길이 읽기
+      uint32_t usbLen = gGlobal_usbLen;
+
+      // 버퍼 크기 검증
+      if (usbLen > sizeof(gGlobal_Buffer))
+      {
+        usbLen = sizeof(gGlobal_Buffer);
+      }
+
       // 데이터 수집 시작 또는 계속 수집
       if (!isCollecting)
       {
@@ -382,10 +397,23 @@ void StartUartTask(void *argument)
         collectIndex = 0;
       }
 
-      // 현재 받은 데이터를 수집 버퍼에 추가 (버퍼 오버플로우 방지 강화)
-      for (uint32_t i = 0; i < gGlobal_usbLen && collectIndex < sizeof(collectBuffer) - 1; i++)
+      // USB 버퍼에서 수집 버퍼로 직접 복사 (localBuffer 제거로 RAM 1KB 절약)
+      for (uint32_t i = 0; i < usbLen && collectIndex < sizeof(collectBuffer) - 1; i++)
       {
         collectBuffer[collectIndex++] = gGlobal_Buffer[i];
+      }
+
+      // USB 토글 플래그 클리어하여 다음 데이터 수신 허용
+      gGlobal_usbToggle = 0;
+
+      // collectIndex 범위 검증 (0으로 나누기 및 배열 범위 초과 방지)
+      if (collectIndex == 0 || collectIndex >= sizeof(collectBuffer))
+      {
+        collectIndex = 0;
+        isCollecting = 0;
+        gGlobal_usbToggle = 0;
+        osDelay(10);
+        continue;
       }
 
       if (collectBuffer[0] == 0x02 && collectBuffer[collectIndex - 1] == 0x03)
@@ -526,7 +554,7 @@ void StartUartTask(void *argument)
         collectIndex = 0;
         isCollecting = 0;
       }
-      gGlobal_usbToggle = 0;
+      // gGlobal_usbToggle는 이미 위에서 클리어됨
     }
     osDelay(10); // 50ms -> 10ms로 단축하여 더 빠른 USB 통신 처리
   }
@@ -685,5 +713,44 @@ void StartButtonTask(void *argument)
   }
   /* USER CODE END StartButtonTask */
 }
+
+/* USER CODE BEGIN Application_Functions */
+
+/**
+ * @brief  스택 오버플로우 감지 시 호출되는 콜백 함수
+ * @param  xTask: 스택 오버플로우가 발생한 태스크 핸들
+ * @param  pcTaskName: 태스크 이름
+ * @retval None
+ */
+void vApplicationStackOverflowHook(TaskHandle_t xTask, signed char *pcTaskName)
+{
+  /* 스택 오버플로우 발생 - 디버깅용 변수 */
+  volatile TaskHandle_t xTaskHandle = xTask;
+  volatile char *taskName = (char *)pcTaskName;
+
+  (void)xTaskHandle;
+  (void)taskName;
+
+  /* 무한 루프 - 디버거에서 중단점 설정하여 확인 */
+  while (1)
+  {
+    /* taskName 변수를 확인하여 어떤 태스크에서 문제가 발생했는지 파악 */
+  }
+}
+
+/**
+ * @brief  메모리 할당 실패 시 호출되는 콜백 함수
+ * @retval None
+ */
+void vApplicationMallocFailedHook(void)
+{
+  /* 메모리 할당 실패 */
+  while (1)
+  {
+    /* 힙 메모리 부족 - configTOTAL_HEAP_SIZE 증가 필요 */
+  }
+}
+
+/* USER CODE END Application_Functions */
 
 /* USER CODE END Application */
