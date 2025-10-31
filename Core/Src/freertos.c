@@ -82,9 +82,11 @@ SystemState_t g_systemState = {0};
 
 extern UART_HandleTypeDef huart1;
 
-extern volatile uint8_t gGlobal_usbToggle;
-extern volatile uint8_t gGlobal_Buffer[1024]; // 1024바이트 USB 수신 버퍼
-extern volatile uint32_t gGlobal_usbLen;
+extern uint8_t gGlobal_usbToggle;
+extern uint8_t gGlobal_Buffer[1024]; // 1024바이트 USB 수신 버퍼
+extern uint32_t gGlobal_usbLen;
+extern uint32_t g_Global_usb_data_time;
+extern uint8_t g_Global_usb_stx_flag;
 
 extern uint32_t Buzzer_timer;
 extern uint32_t Buzzer_count;
@@ -222,7 +224,7 @@ void StartDefaultTask(void *argument)
 
       bool enable_calibration = true;
       // 임계값 체크 (3 이상이거나 타임아웃)
-      if (abs(pending_count_change) > 3 || (enable_calibration && (abs(pending_count_change) == 3 ) && (current_time - stable_timer_start) > 15))
+      if (abs(pending_count_change) > 3 || (enable_calibration && (abs(pending_count_change) == 3) && (current_time - stable_timer_start) > 15))
       {
         // 방향 결정
         if (pending_count_change > 0)
@@ -372,191 +374,137 @@ void StartUartTask(void *argument)
   UNUSED(argument);
   /* USER CODE BEGIN StartUartTask */
   // 데이터 수집 관련 변수들 - static으로 선언하여 스택 오버플로우 방지
-  static uint8_t collectBuffer[1024]; // 데이터 수집 버퍼 (1024바이트)
-  static uint16_t collectIndex = 0;   // 데이터 수집 인덱스 (static으로 상태 유지)
-  static uint8_t isCollecting = 0;    // 데이터 수집 상태 플래그 (static으로 상태 유지)
 
   /* Infinite loop */
   for (;;)
   {
     if (gGlobal_usbToggle == 1)
     {
-      // USB 데이터 길이 읽기
-      uint32_t usbLen = gGlobal_usbLen;
 
-      // 버퍼 크기 검증
-      if (usbLen > sizeof(gGlobal_Buffer))
+      if (gGlobal_Buffer[0] == 0x02 && gGlobal_Buffer[gGlobal_usbLen - 1] == 0x03)
       {
-        usbLen = sizeof(gGlobal_Buffer);
-      }
-
-      // 데이터 수집 시작 또는 계속 수집
-      if (!isCollecting)
-      {
-        isCollecting = 1;
-        collectIndex = 0;
-      }
-
-      // USB 버퍼에서 수집 버퍼로 직접 복사 (localBuffer 제거로 RAM 1KB 절약)
-      for (uint32_t i = 0; i < usbLen && collectIndex < sizeof(collectBuffer) - 1; i++)
-      {
-        collectBuffer[collectIndex++] = gGlobal_Buffer[i];
-      }
-
-      // USB 토글 플래그 클리어하여 다음 데이터 수신 허용
-      gGlobal_usbToggle = 0;
-
-      // collectIndex 범위 검증 (0으로 나누기 및 배열 범위 초과 방지)
-      if (collectIndex == 0 || collectIndex >= sizeof(collectBuffer))
-      {
-        collectIndex = 0;
-        isCollecting = 0;
-        gGlobal_usbToggle = 0;
-        osDelay(10);
-        continue;
-      }
-
-      if (collectBuffer[0] == 0x02 && collectBuffer[collectIndex - 1] == 0x03)
-      {
-        if (collectBuffer[1] == 0xA4)
+        if (gGlobal_Buffer[1] == 0xA4)
         {
           calculate_crc8();
-          if (collectBuffer[collectIndex - 3] == gGlobal_crc1 && collectBuffer[collectIndex - 2] == gGlobal_crc2)
+          if (gGlobal_Buffer[gGlobal_usbLen - 3] == gGlobal_crc1 && gGlobal_Buffer[gGlobal_usbLen - 2] == gGlobal_crc2)
           {
-            if (collectBuffer[8] == 0x31)
+            if (gGlobal_Buffer[8] == 0x31)
             {
               // gGlobal_ledState = 0;
               // TriggerPin_2();
               TriggerPin_1();
             }
-            if (collectBuffer[8] == 0x32)
+            if (gGlobal_Buffer[8] == 0x32)
             {
               // gGlobal_ledState = 1;
               TriggerPin_2();
             }
           }
-          else if (collectBuffer[collectIndex - 3] != gGlobal_crc1 || collectBuffer[collectIndex - 2] != gGlobal_crc2)
+          else if (gGlobal_Buffer[gGlobal_usbLen - 3] != gGlobal_crc1 || gGlobal_Buffer[gGlobal_usbLen - 2] != gGlobal_crc2)
           {
-            // 버퍼 초기화 및 수집 상태 리셋
-            memset(collectBuffer, 0, sizeof(collectBuffer));
-            collectIndex = 0;
-            isCollecting = 0;
           }
         }
-        else if (collectBuffer[1] == 0xA3)
+        else if (gGlobal_Buffer[1] == 0xA3)
         {
           uint8_t chk = 0;
-          chk += collectBuffer[1];
-          chk += collectBuffer[2];
-          chk += collectBuffer[3];
-          chk += collectBuffer[4];
-          chk += collectBuffer[5];
-          chk += collectBuffer[6];
-          chk += collectBuffer[7];
-          if (hextoascii(chk >> 4 & 0x0F) == collectBuffer[8] && hextoascii(chk & 0x0F) == collectBuffer[9])
+          chk += gGlobal_Buffer[1];
+          chk += gGlobal_Buffer[2];
+          chk += gGlobal_Buffer[3];
+          chk += gGlobal_Buffer[4];
+          chk += gGlobal_Buffer[5];
+          chk += gGlobal_Buffer[6];
+          chk += gGlobal_Buffer[7];
+          if (hextoascii(chk >> 4 & 0x0F) == gGlobal_Buffer[8] && hextoascii(chk & 0x0F) == gGlobal_Buffer[9])
           {
             // 트리거 설정 명령 수신
-            if (collectBuffer[4] == 0x31)
+            if (gGlobal_Buffer[4] == 0x31)
             {
               g_systemState.triggers.trigger_in_setup_1 = 1; // 하강엣지 트리거
             }
-            else if (collectBuffer[4] == 0x32)
+            else if (gGlobal_Buffer[4] == 0x32)
             {
               g_systemState.triggers.trigger_in_setup_1 = 2; // 상승엣지 트리거
             }
-            else if (collectBuffer[4] == 0x30)
+            else if (gGlobal_Buffer[4] == 0x30)
             {
               g_systemState.triggers.trigger_in_setup_1 = 0; // 모든 엣지 감지지
             }
 
-            if (collectBuffer[5] == 0x31)
+            if (gGlobal_Buffer[5] == 0x31)
             {
               g_systemState.triggers.trigger_in_setup_2 = 1; // 하강엣지 트리거
             }
-            else if (collectBuffer[5] == 0x32)
+            else if (gGlobal_Buffer[5] == 0x32)
             {
               g_systemState.triggers.trigger_in_setup_2 = 2; // 상승엣지 트리거
             }
-            else if (collectBuffer[5] == 0x30)
+            else if (gGlobal_Buffer[5] == 0x30)
             {
               g_systemState.triggers.trigger_in_setup_2 = 0; // 모든 엣지 감지지
             }
 
-            if (collectBuffer[6] == 0x31)
+            if (gGlobal_Buffer[6] == 0x31)
             {
               HAL_GPIO_WritePin(Trigger_OUT_1_GPIO_Port, Trigger_OUT_1_Pin, GPIO_PIN_SET);
               g_systemState.triggoutState1 = 1; // HIGH 출력
             }
-            else if (collectBuffer[6] == 0x32)
+            else if (gGlobal_Buffer[6] == 0x32)
             {
               HAL_GPIO_WritePin(Trigger_OUT_1_GPIO_Port, Trigger_OUT_1_Pin, GPIO_PIN_RESET);
               g_systemState.triggoutState1 = 2; // LOW 출력
             }
 
-            if (collectBuffer[7] == 0x31)
+            if (gGlobal_Buffer[7] == 0x31)
             {
               HAL_GPIO_WritePin(Trigger_OUT_2_GPIO_Port, Trigger_OUT_2_Pin, GPIO_PIN_SET);
               g_systemState.triggoutState2 = 1; // HIGH 출력
             }
-            else if (collectBuffer[7] == 0x32)
+            else if (gGlobal_Buffer[7] == 0x32)
             {
               HAL_GPIO_WritePin(Trigger_OUT_2_GPIO_Port, Trigger_OUT_2_Pin, GPIO_PIN_RESET);
               g_systemState.triggoutState2 = 2; // LOW 출력
             }
 
-            if (collectBuffer[4] == 0xFF && collectBuffer[5] == 0xFF && collectBuffer[6] == 0xFF && collectBuffer[7] == 0xFF)
+            if (gGlobal_Buffer[4] == 0xFF && gGlobal_Buffer[5] == 0xFF && gGlobal_Buffer[6] == 0xFF && gGlobal_Buffer[7] == 0xFF)
             {
               g_systemState.enable_buzzer = 0;
             }
-            else if (collectBuffer[4] == 0xFE && collectBuffer[5] == 0xFE && collectBuffer[6] == 0xFE && collectBuffer[7] == 0xFE)
+            else if (gGlobal_Buffer[4] == 0xFE && gGlobal_Buffer[5] == 0xFE && gGlobal_Buffer[6] == 0xFE && gGlobal_Buffer[7] == 0xFE)
             {
               g_systemState.enable_buzzer = 1;
             }
-            // TriggerPin_1();
-            collectIndex = 0;
-            isCollecting = 0;
           }
           else
           {
-            collectIndex = 0;
-            isCollecting = 0;
           }
         }
-        else if (collectBuffer[collectIndex - 1] == 0x03 && collectBuffer[1] != 0xA4) // collectBuffer[i]
+        else if (gGlobal_Buffer[gGlobal_usbLen - 1] == 0x03 && gGlobal_Buffer[1] != 0xA4) // collectBuffer[i]
         {
           // 종료 문자를 찾았으므로 UART로 전송
-          HAL_UART_Transmit(&huart1, collectBuffer, collectIndex, 10000);
-          // sprintf(testbuf, "%s", collectIndex);
-          // CDC_Transmit_FS(testbuf, collectIndex);
-          // 버퍼 초기화 및 수집 상태 리셋
-          memset(collectBuffer, 0, sizeof(collectBuffer));
-          collectIndex = 0;
-          isCollecting = 0;
+          HAL_UART_Transmit(&huart1, gGlobal_Buffer, gGlobal_usbLen, 10000);
         }
-        else if (collectBuffer[collectIndex - 1] == 0x03 && collectBuffer[1] == 0xA4) // collectBuffer[i]
+        else if (gGlobal_Buffer[gGlobal_usbLen - 1] == 0x03 && gGlobal_Buffer[1] == 0xA4) // collectBuffer[i]
         {
-          // 종료 문자를 찾았으므로 UART로 전송, 버퍼 초기화 및 수집 상태 리셋
-          memset(collectBuffer, 0, sizeof(collectBuffer));
-          collectIndex = 0;
-          isCollecting = 0;
         }
-        else if (collectBuffer[collectIndex - 1] != 0x03) // collectBuffer[i]
+        else if (gGlobal_Buffer[gGlobal_usbLen - 1] != 0x03) // collectBuffer[i]
         {
-          // 버퍼 초기화 및 수집 상태 리셋
-          memset(collectBuffer, 0, sizeof(collectBuffer));
-          collectIndex = 0;
-          isCollecting = 0;
         }
       }
-      else if (collectBuffer[0] != 0x02)
+      else if (gGlobal_Buffer[0] != 0x02)
       {
-        memset(collectBuffer, 0, sizeof(collectBuffer));
-        collectIndex = 0;
-        isCollecting = 0;
       }
-      // gGlobal_usbToggle는 이미 위에서 클리어됨
+
+      gGlobal_usbLen = 0;
+      gGlobal_usbToggle = 0;
     }
-    osDelay(10); // 50ms -> 10ms로 단축하여 더 빠른 USB 통신 처리
+    else if (gGlobal_usbLen > 0 && g_Global_usb_data_time != 0 && (HAL_GetTick() - g_Global_usb_data_time > 20))
+    {
+      g_Global_usb_stx_flag = 0;
+      g_Global_usb_data_time = 0;
+      gGlobal_usbLen = 0;
+      gGlobal_usbToggle = 0;
+    }
+    osDelay(10);
   }
   /* USER CODE END StartUartTask */
 }

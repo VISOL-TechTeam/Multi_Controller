@@ -32,9 +32,11 @@
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
 /* volatile 키워드 추가 - 인터럽트와 메인 루프 간 공유 변수 */
-volatile uint8_t gGlobal_Buffer[1024]={0};  // 1024바이트 USB 수신 버퍼
-volatile uint32_t gGlobal_usbLen=0;
-volatile uint8_t gGlobal_usbToggle=0;
+uint8_t gGlobal_Buffer[1024] = {0}; // 1024바이트 USB 수신 버퍼
+uint32_t gGlobal_usbLen = 0;
+uint8_t gGlobal_usbToggle = 0;
+uint8_t g_Global_usb_stx_flag = 0;
+uint32_t g_Global_usb_data_time = 0;
 /* USER CODE END PV */
 
 /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
@@ -263,44 +265,46 @@ static int8_t CDC_Control_FS(uint8_t cmd, uint8_t *pbuf, uint16_t length)
 static int8_t CDC_Receive_FS(uint8_t *Buf, uint32_t *Len)
 {
   /* USER CODE BEGIN 6 */
-  /* NULL 포인터 체크 */
-  if (Buf == NULL || Len == NULL)
-  {
-    return (USBD_FAIL);
-  }
-  
-  uint32_t len = *Len;
-  
-  /* 버퍼 오버플로우 방지 */
-  if (len == 0 || len > sizeof(gGlobal_Buffer))
-  {
-    USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
-    USBD_CDC_ReceivePacket(&hUsbDeviceFS);
-    return (USBD_FAIL);
-  }
-  
-  /* 이전 데이터가 아직 처리 중이면 새 데이터 무시 (오버런 방지) */
-  if (gGlobal_usbToggle == 1)
-  {
-    USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
-    USBD_CDC_ReceivePacket(&hUsbDeviceFS);
-    return (USBD_BUSY);
-  }
-
-  /* 인터럽트 컨텍스트에서 최소한의 작업만 수행 */
-  /* 전체 버퍼를 클리어하지 않고 필요한 부분만 복사 */
-  for (uint32_t i = 0; i < len; i++)
-  {
-    gGlobal_Buffer[i] = Buf[i];
-  }
-  
-  /* 길이와 플래그를 마지막에 설정 (원자적 작업 순서 보장) */
-  gGlobal_usbLen = len;
-  gGlobal_usbToggle = 1;
-  
   USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
   USBD_CDC_ReceivePacket(&hUsbDeviceFS);
-  
+  // CDC_Transmit_FS(Buf, Buf);
+
+  uint32_t len = *Len;
+  // 버퍼 오버플로우 방지
+  if (len > sizeof(gGlobal_Buffer))
+  {
+    len = sizeof(gGlobal_Buffer);
+  }
+  if (Buf[0] == 0x02 && g_Global_usb_stx_flag == 0)
+  {
+    g_Global_usb_stx_flag = 1;
+    gGlobal_usbLen = 0;
+    for (uint32_t i = 0; i < len; i++)
+    {
+      gGlobal_Buffer[gGlobal_usbLen++] = Buf[i];
+    }
+    g_Global_usb_data_time = HAL_GetTick();
+  }
+  else if (g_Global_usb_stx_flag == 1)
+  {
+    for (uint32_t i = 0; i < len; i++)
+    {
+      gGlobal_Buffer[gGlobal_usbLen++] = Buf[i];
+    }
+    g_Global_usb_data_time = HAL_GetTick();
+  }
+
+  if (gGlobal_Buffer[gGlobal_usbLen - 1] == 0x03)
+  {
+    g_Global_usb_stx_flag = 0;
+    gGlobal_usbToggle = 1;
+    g_Global_usb_data_time = 0;
+  }
+  else if (gGlobal_usbLen > 0 && g_Global_usb_data_time != 0 && (HAL_GetTick() - g_Global_usb_data_time > 20))
+  {
+    g_Global_usb_stx_flag = 0;
+    g_Global_usb_data_time = 0;
+  }
   return (USBD_OK);
   /* USER CODE END 6 */
 }
@@ -320,27 +324,27 @@ uint8_t CDC_Transmit_FS(uint8_t *Buf, uint16_t Len)
 {
   uint8_t result = USBD_OK;
   /* USER CODE BEGIN 7 */
-  
+
   /* 입력 파라미터 검증 */
   if (Buf == NULL || Len == 0)
   {
     return USBD_FAIL;
   }
-  
+
   /* 버퍼 크기 검증 - 최대 전송 크기 초과 방지 */
   if (Len > APP_TX_DATA_SIZE)
   {
     return USBD_FAIL;
   }
-  
+
   USBD_CDC_HandleTypeDef *hcdc = (USBD_CDC_HandleTypeDef *)hUsbDeviceFS.pClassData;
-  
+
   /* NULL 포인터 체크 - USB가 초기화되지 않았거나 연결이 끊긴 경우 */
   if (hcdc == NULL)
   {
     return USBD_FAIL;
   }
-  
+
   if (hcdc->TxState != 0)
   {
     return USBD_BUSY;

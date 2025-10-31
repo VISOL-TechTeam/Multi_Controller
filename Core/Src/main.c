@@ -388,6 +388,16 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   /* USER CODE END Callback 1 */
 }
 
+// UART 수신 완료 콜백 함수
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+	if (huart->Instance == USART1)
+	{
+    CDC_Transmit_FS((uint8_t *)&rxData, 1);
+		HAL_UART_Receive_IT(&huart1, &rxData, 1);
+	}
+}
+
 /**
  * @brief  This function is executed in case of error occurrence.
  * @retval None
